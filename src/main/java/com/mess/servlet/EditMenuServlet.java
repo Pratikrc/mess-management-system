@@ -9,30 +9,38 @@ import javax.servlet.http.*;
 
 import com.mess.db.DBConnection;
 
-@WebServlet("/addMenu")
-public class AddMenuServlet extends HttpServlet {
+@WebServlet("/editMenu")
+public class EditMenuServlet extends HttpServlet {
 
 
 protected void doPost(HttpServletRequest request, HttpServletResponse response)
         throws IOException {
 
+    String role = (String) request.getSession().getAttribute("role");
+
+    if (role == null || !role.equals("admin")) {
+        response.sendRedirect("login.jsp");
+        return;
+    }
+
+    int id = Integer.parseInt(request.getParameter("id"));
     String mealType = request.getParameter("meal_type");
     String description = request.getParameter("description");
 
     try {
         Connection con = DBConnection.getConnection();
 
-        // 🔥 Always save today's date
         PreparedStatement ps = con.prepareStatement(
-            "INSERT INTO menu(meal_date, meal_type, description) VALUES (CURDATE(), ?, ?)"
+            "UPDATE menu SET meal_type=?, description=? WHERE id=?"
         );
 
         ps.setString(1, mealType);
         ps.setString(2, description);
+        ps.setInt(3, id);
 
         ps.executeUpdate();
 
-        response.sendRedirect("admin/add_menu.jsp?msg=Menu Added&type=success");
+        response.sendRedirect("admin/add_menu.jsp?msg=Menu Updated&type=success");
 
     } catch (Exception e) {
         e.printStackTrace();

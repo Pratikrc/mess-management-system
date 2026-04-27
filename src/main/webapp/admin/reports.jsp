@@ -2,9 +2,11 @@
 <%@ page import="com.mess.db.DBConnection" %>
 
 <%
-if (session.getAttribute("email") == null || 
-    !session.getAttribute("role").equals("admin")) {
-    response.sendRedirect("../login.jsp");
+String email = (String) session.getAttribute("email");
+String role = (String) session.getAttribute("role");
+
+if (email == null || role == null || !role.equals("admin")) {
+response.sendRedirect("../login.jsp");
 }
 %>
 
@@ -15,90 +17,104 @@ if (session.getAttribute("email") == null ||
 <meta charset="UTF-8">
 <title>Reports</title>
 
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
+
 <body>
 
-<h2>Payment Report</h2>
+<!-- Navbar -->
 
-<%
-int paid = 0;
-int pending = 0;
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+        <span class="navbar-brand">Reports</span>
+        <a href="dashboard.jsp" class="btn btn-light">Back</a>
+    </div>
+</nav>
 
-try {
-Connection con = DBConnection.getConnection();
-Statement st = con.createStatement();
+<div class="container mt-4">
 
+```
+<div class="row">
 
-ResultSet rs = st.executeQuery("SELECT status, COUNT(*) as count FROM payments GROUP BY status");
+    <!-- Payment Chart -->
+    <div class="col-md-6">
+        <div class="card shadow p-3 mb-4">
+            <h5 class="text-center">Payment Report</h5>
 
-while (rs.next()) {
-    if (rs.getString("status").equals("Paid")) {
-        paid = rs.getInt("count");
-    } else {
-        pending = rs.getInt("count");
-    }
-}
+            <%
+            int paid = 0;
+            int pending = 0;
 
+            try {
+                Connection con = DBConnection.getConnection();
+                Statement st = con.createStatement();
+                ResultSet rs = st.executeQuery("SELECT status, COUNT(*) as count FROM payments GROUP BY status");
 
-} catch (Exception e) {
-e.printStackTrace();
-}
-%>
+                while (rs.next()) {
+                    if (rs.getString("status").equals("Paid")) {
+                        paid = rs.getInt("count");
+                    } else {
+                        pending = rs.getInt("count");
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            %>
 
-<canvas id="paymentChart" width="400" height="200"></canvas>
+            <canvas id="paymentChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Attendance Chart -->
+    <div class="col-md-6">
+        <div class="card shadow p-3 mb-4">
+            <h5 class="text-center">Attendance Report</h5>
+
+            <%
+            int present = 0;
+            int absent = 0;
+
+            try {
+                Connection con = DBConnection.getConnection();
+                Statement st = con.createStatement();
+                ResultSet rs = st.executeQuery("SELECT status, COUNT(*) as count FROM attendance GROUP BY status");
+
+                while (rs.next()) {
+                    if (rs.getString("status").equals("Present")) {
+                        present = rs.getInt("count");
+                    } else {
+                        absent = rs.getInt("count");
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            %>
+
+            <canvas id="attendanceChart"></canvas>
+        </div>
+    </div>
+
+</div>
+```
+
+</div>
 
 <script>
-var ctx = document.getElementById('paymentChart').getContext('2d');
-
-var paymentChart = new Chart(ctx, {
+new Chart(document.getElementById("paymentChart"), {
     type: 'pie',
     data: {
         labels: ['Paid', 'Pending'],
         datasets: [{
-            label: 'Payments',
             data: [<%=paid%>, <%=pending%>]
         }]
     }
 });
-</script>
 
-<hr>
-
-<h2>Attendance Report</h2>
-
-<%
-int present = 0;
-int absent = 0;
-
-try {
-Connection con = DBConnection.getConnection();
-Statement st = con.createStatement();
-
-
-ResultSet rs = st.executeQuery("SELECT status, COUNT(*) as count FROM attendance GROUP BY status");
-
-while (rs.next()) {
-    if (rs.getString("status").equals("Present")) {
-        present = rs.getInt("count");
-    } else {
-        absent = rs.getInt("count");
-    }
-}
-
-
-} catch (Exception e) {
-e.printStackTrace();
-}
-%>
-
-<canvas id="attendanceChart" width="400" height="200"></canvas>
-
-<script>
-var ctx2 = document.getElementById('attendanceChart').getContext('2d');
-
-var attendanceChart = new Chart(ctx2, {
+new Chart(document.getElementById("attendanceChart"), {
     type: 'bar',
     data: {
         labels: ['Present', 'Absent'],
@@ -109,8 +125,6 @@ var attendanceChart = new Chart(ctx2, {
     }
 });
 </script>
-
-<a href="dashboard.jsp">Back</a>
 
 </body>
 </html>

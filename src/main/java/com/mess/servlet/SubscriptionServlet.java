@@ -17,29 +17,40 @@ public class SubscriptionServlet extends HttpServlet {
 protected void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
 
-    String email = request.getParameter("email");
-    String plan = request.getParameter("plan");
-    String start = request.getParameter("start_date");
-    String end = request.getParameter("end_date");
+	String email = (String) request.getSession().getAttribute("email");
+	String plan = request.getParameter("plan");
 
-    try {
-        Connection con = DBConnection.getConnection();
+	try {
+	Connection con = DBConnection.getConnection();
 
-        String query = "INSERT INTO subscription(user_email, plan_type, start_date, end_date) VALUES (?, ?, ?, ?)";
-        PreparedStatement ps = con.prepareStatement(query);
+	
+	// 📅 Auto dates
+	java.time.LocalDate startDate = java.time.LocalDate.now();
+	java.time.LocalDate endDate;
 
-        ps.setString(1, email);
-        ps.setString(2, plan);
-        ps.setString(3, start);
-        ps.setString(4, end);
+	if (plan.equals("Weekly")) {
+	    endDate = startDate.plusDays(7);
+	} else {
+	    endDate = startDate.plusDays(30);
+	}
 
-        ps.executeUpdate();
+	String query = "INSERT INTO subscription(user_email, plan_type, start_date, end_date) VALUES (?, ?, ?, ?)";
+	PreparedStatement ps = con.prepareStatement(query);
 
-        response.sendRedirect("user/dashboard.jsp");
+	ps.setString(1, email);
+	ps.setString(2, plan);
+	ps.setDate(3, java.sql.Date.valueOf(startDate));
+	ps.setDate(4, java.sql.Date.valueOf(endDate));
 
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
+	ps.executeUpdate();
+
+	response.sendRedirect(request.getContextPath() + "/user/subscription.jsp?msg=Subscription Successful&type=success");
+	
+
+	} catch (Exception e) {
+	e.printStackTrace();
+	}
+
 }
 
 

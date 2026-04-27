@@ -8,60 +8,67 @@ pageEncoding="UTF-8"%>
 <meta charset="UTF-8">
 <title>Register - Smart Mess</title>
 
-<style>
-    body {
-        font-family: Arial;
-        background-color: #f4f4f4;
-        text-align: center;
-    }
+<!-- Bootstrap CSS -->
 
-    .container {
-        width: 350px;
-        margin: 80px auto;
-        padding: 20px;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0px 0px 10px gray;
-    }
-
-    input {
-        width: 90%;
-        padding: 10px;
-        margin: 10px 0;
-    }
-
-    button {
-        padding: 10px 20px;
-        background-color: green;
-        color: white;
-        border: none;
-        cursor: pointer;
-    }
-
-    a {
-        text-decoration: none;
-        color: blue;
-    }
-</style>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
 
-<body>
+<body class="bg-light">
 
 <div class="container">
-    <h2>User Registration</h2>
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-5">
 
 ```
-<form action="register" method="post">
-    <input type="text" name="name" placeholder="Enter Name" required>
-    <input type="email" name="email" placeholder="Enter Email" required>
-    <input type="password" name="password" placeholder="Enter Password" required>
+        <div class="card shadow p-4">
 
-    <button type="submit">Register</button>
-</form>
+            <h3 class="text-center mb-3">User Registration</h3>
 
-<br>
-<p>Already have an account? <a href="login.jsp">Login</a></p>
+            <%
+            String msg = request.getParameter("msg");
+            String type = request.getParameter("type");
+
+            if (msg != null) {
+            %>
+
+            <div class="alert <%= type != null && type.equals("success") ? "alert-success" : "alert-danger" %>">
+                <%= msg %>
+            </div>
+
+            <%
+            }
+            %>
+
+            <form action="<%=request.getContextPath()%>/register" method="post">
+
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input type="text" name="name" class="form-control" placeholder="Enter Name" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control" placeholder="Enter Email" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" placeholder="Enter Password" required>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">Register</button>
+
+            </form>
+
+            <p class="mt-3 text-center">
+                Already have an account? <a href="login.jsp">Login</a>
+            </p>
+
+        </div>
+
+    </div>
+</div>
 ```
 
 </div>

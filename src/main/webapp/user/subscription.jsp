@@ -1,9 +1,47 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 pageEncoding="UTF-8"%>
+<%@ page import="java.sql.*" %>
+<%@ page import="com.mess.db.DBConnection" %>
 
 <%
 if (session.getAttribute("email") == null) {
-    response.sendRedirect("../login.jsp");
+response.sendRedirect("../login.jsp");
+return;
+}
+
+String email = (String) session.getAttribute("email");
+
+String plan = null;
+String startDate = null;
+String endDate = null;
+boolean active = false;
+
+try {
+Connection con = DBConnection.getConnection();
+
+
+PreparedStatement ps = con.prepareStatement(
+    "SELECT * FROM subscription WHERE user_email=? ORDER BY end_date DESC LIMIT 1"
+);
+
+ps.setString(1, email);
+ResultSet rs = ps.executeQuery();
+
+if (rs.next()) {
+    plan = rs.getString("plan_type");
+    startDate = rs.getString("start_date");
+    endDate = rs.getString("end_date");
+
+    java.sql.Date ed = rs.getDate("end_date");
+
+    if (ed.getTime() >= System.currentTimeMillis()) {
+        active = true;
+    }
+}
+
+
+} catch (Exception e) {
+e.printStackTrace();
 }
 %>
 
@@ -13,36 +51,59 @@ if (session.getAttribute("email") == null) {
 <head>
 <meta charset="UTF-8">
 <title>Subscription</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
 
-<h2>Choose Subscription Plan</h2>
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+        <span class="navbar-brand">Subscription</span>
+        <a href="dashboard.jsp" class="btn btn-light">Back</a>
+    </div>
+</nav>
 
-<form action="<%=request.getContextPath()%>/subscribe" method="post">
+<div class="container mt-4">
 
-```
-<input type="hidden" name="email" value="<%=session.getAttribute("user")%>">
+<div class="row justify-content-center">
+<div class="col-md-5">
 
-<label>
-    <input type="radio" name="plan" value="Weekly"> Weekly
-</label>
+<div class="card shadow p-4 text-center">
 
-<label>
-    <input type="radio" name="plan" value="Monthly"> Monthly
-</label>
+<h3 class="mb-3">Your Subscription</h3>
 
-<br><br>
+<% if (plan != null) { %>
 
-Start Date: <input type="date" name="start_date"><br><br>
+<p><strong>Plan:</strong> <%= plan %></p>
+<p><strong>Start Date:</strong> <%= startDate %></p>
+<p><strong>End Date:</strong> <%= endDate %></p>
 
-End Date: <input type="date" name="end_date"><br><br>
+<p>
+<strong>Status:</strong> 
+<span class="<%= active ? "text-success" : "text-danger" %>">
+    <%= active ? "Active" : "Expired" %>
+</span>
+</p>
 
-<button type="submit">Subscribe</button>
-```
+<% } else { %>
 
-</form>
+<p class="text-danger">No subscription found</p>
 
-<a href="dashboard.jsp">Back</a>
+<% } %>
+
+<hr>
+
+<a href="payment.jsp" class="btn btn-warning w-100">
+    Buy / Renew Plan
+</a>
+
+</div>
+
+</div>
+</div>
+
+</div>
 
 </body>
 </html>

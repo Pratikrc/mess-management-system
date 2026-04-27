@@ -36,7 +36,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
         int result = ps.executeUpdate();
 
         if (result > 0) {
-        	response.sendRedirect("login.jsp");
+        	response.sendRedirect("login.jsp?msg=Registration Successful&type=success");
         } else {
             response.getWriter().println("Registration Failed");
         }

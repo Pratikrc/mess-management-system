@@ -9,30 +9,29 @@ import javax.servlet.http.*;
 
 import com.mess.db.DBConnection;
 
-@WebServlet("/addMenu")
-public class AddMenuServlet extends HttpServlet {
+@WebServlet("/feedback")
+public class FeedbackServlet extends HttpServlet {
 
 
 protected void doPost(HttpServletRequest request, HttpServletResponse response)
         throws IOException {
 
-    String mealType = request.getParameter("meal_type");
-    String description = request.getParameter("description");
+    String email = (String) request.getSession().getAttribute("email");
+    String message = request.getParameter("message");
 
     try {
         Connection con = DBConnection.getConnection();
 
-        // 🔥 Always save today's date
         PreparedStatement ps = con.prepareStatement(
-            "INSERT INTO menu(meal_date, meal_type, description) VALUES (CURDATE(), ?, ?)"
+            "INSERT INTO feedback(user_email, message) VALUES (?, ?)"
         );
 
-        ps.setString(1, mealType);
-        ps.setString(2, description);
+        ps.setString(1, email);
+        ps.setString(2, message);
 
         ps.executeUpdate();
 
-        response.sendRedirect("admin/add_menu.jsp?msg=Menu Added&type=success");
+        response.sendRedirect("user/feedback.jsp?msg=Feedback Submitted&type=success");
 
     } catch (Exception e) {
         e.printStackTrace();

@@ -15,7 +15,7 @@ response.sendRedirect("../login.jsp");
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Subscriptions</title>
+<title>Manage Users</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -25,7 +25,7 @@ response.sendRedirect("../login.jsp");
 
 <nav class="navbar navbar-dark bg-dark">
     <div class="container-fluid">
-        <span class="navbar-brand">Subscriptions</span>
+        <span class="navbar-brand">Manage Users</span>
         <a href="dashboard.jsp" class="btn btn-light">Back</a>
     </div>
 </nav>
@@ -33,16 +33,16 @@ response.sendRedirect("../login.jsp");
 <div class="container mt-4">
 
 ```
-<h3>Subscription Records</h3>
+<h3 class="mb-3">User List</h3>
 
 <table class="table table-bordered table-striped table-hover">
 
     <thead class="table-dark">
         <tr>
+            <th>Name</th>
             <th>Email</th>
-            <th>Plan</th>
-            <th>Start Date</th>
-            <th>End Date</th>
+            <th>Status</th>
+            <th>Action</th>
         </tr>
     </thead>
 
@@ -52,21 +52,34 @@ response.sendRedirect("../login.jsp");
     try {
         Connection con = DBConnection.getConnection();
         Statement st = con.createStatement();
-        ResultSet rs = st.executeQuery("SELECT * FROM subscription");
+        ResultSet rs = st.executeQuery("SELECT * FROM users");
 
         while (rs.next()) {
     %>
 
     <tr>
-        <td><%= rs.getString("user_email") %></td>
-        <td><%= rs.getString("plan_type") %></td>
-        <td><%= rs.getString("start_date") %></td>
-        <td><%= rs.getString("end_date") %></td>
+        <td><%= rs.getString("name") %></td>
+        <td><%= rs.getString("email") %></td>
+        <td>
+            <span class="badge 
+                <%= rs.getString("status").equals("approved") ? "bg-success" : "bg-warning" %>">
+                <%= rs.getString("status") %>
+            </span>
+        </td>
+
+        <td>
+            <% if (rs.getString("status").equals("pending")) { %>
+                <a href="../approveUser?email=<%= rs.getString("email") %>" 
+                   class="btn btn-success btn-sm">Approve</a>
+            <% } else { %>
+                <span class="text-success">Approved</span>
+            <% } %>
+        </td>
     </tr>
 
     <%
         }
-    } catch (Exception e) {
+    } catch(Exception e) {
         e.printStackTrace();
     }
     %>
