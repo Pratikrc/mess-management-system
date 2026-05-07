@@ -8,9 +8,7 @@ pageEncoding="UTF-8"%>
 
 <meta charset="UTF-8">
 
-<title>Login - Smart Mess</title>
-
-<!-- Bootstrap CSS -->
+<title>Forgot Password - Smart Mess</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -22,12 +20,12 @@ pageEncoding="UTF-8"%>
 
     <div class="row justify-content-center mt-5">
 
-        <div class="col-md-4">
+        <div class="col-md-5">
 
             <div class="card shadow p-4">
 
-                <h3 class="text-center mb-3">
-                    User Login
+                <h3 class="text-center mb-4">
+                    Forgot Password
                 </h3>
 
                 <%
@@ -39,7 +37,7 @@ pageEncoding="UTF-8"%>
                 %>
 
                 <div class="alert
-                    <%= type != null && type.equals("success")
+                    <%= "success".equals(type)
                         ? "alert-success"
                         : "alert-danger" %>">
 
@@ -51,7 +49,7 @@ pageEncoding="UTF-8"%>
                 }
                 %>
 
-                <form action="login" method="post">
+                <form action="forgotPassword" method="post">
 
                     <!-- EMAIL -->
 
@@ -64,57 +62,61 @@ pageEncoding="UTF-8"%>
                         <input type="email"
                                name="email"
                                class="form-control"
-                               placeholder="Enter Email"
+                               placeholder="Enter Registered Email"
                                required>
 
                     </div>
 
-                    <!-- PASSWORD -->
+                    <!-- PHONE -->
 
                     <div class="mb-3">
 
                         <label class="form-label">
-                            Password
+                            Phone Number
+                        </label>
+
+                        <input type="text"
+                               name="phone"
+                               class="form-control"
+                               placeholder="Enter Registered Phone Number"
+                               pattern="[0-9]{10}"
+                               maxlength="10"
+                               required>
+
+                    </div>
+
+                    <!-- NEW PASSWORD -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            New Password
                         </label>
 
                         <input type="password"
                                name="password"
                                class="form-control"
-                               placeholder="Enter Password"
+                               placeholder="Enter New Password"
                                required>
 
                     </div>
 
-                    <!-- LOGIN BUTTON -->
+                    <!-- BUTTON -->
 
                     <button type="submit"
                             class="btn btn-primary w-100">
 
-                        Login
+                        Reset Password
 
                     </button>
 
                 </form>
 
-                <!-- REGISTER -->
-
                 <p class="mt-3 text-center">
 
-                    New user?
+                    <a href="login.jsp">
 
-                    <a href="register.jsp">
-                        Register
-                    </a>
-
-                </p>
-
-                <!-- FORGOT PASSWORD -->
-
-                <p class="text-center">
-
-                    <a href="forgot_password.jsp">
-
-                        Forgot Password?
+                        Back to Login
 
                     </a>
 

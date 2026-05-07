@@ -3,8 +3,12 @@
 
 <%
 if (session.getAttribute("email") == null) {
-response.sendRedirect("../login.jsp");
+
+    response.sendRedirect("../login.jsp");
+
+    return;
 }
+
 String email = (String) session.getAttribute("email");
 %>
 
@@ -12,69 +16,186 @@ String email = (String) session.getAttribute("email");
 
 <html>
 <head>
+
 <meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1">
+
 <title>Your Payments</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet">
 
 </head>
 
-<body>
+<body class="bg-light">
+
+<!-- 🔥 NAVBAR -->
 
 <nav class="navbar navbar-dark bg-dark">
+
     <div class="container-fluid">
-        <span class="navbar-brand">Your Payments</span>
-        <a href="dashboard.jsp" class="btn btn-light">Back</a>
+
+        <span class="navbar-brand">
+            Your Payments
+        </span>
+
+        <a href="dashboard.jsp"
+           class="btn btn-light btn-sm">
+
+            Back
+
+        </a>
+
     </div>
+
 </nav>
 
-<div class="container mt-4">
+<div class="container py-4">
 
-```
-<h3>Your Payment History</h3>
+<!-- 🔥 PAGE TITLE -->
 
-<table class="table table-bordered table-striped">
+<h3 class="text-center mb-4">
 
-    <thead class="table-dark">
-        <tr>
-            <th>Amount</th>
-            <th>Status</th>
-            <th>Date</th>
-        </tr>
-    </thead>
+    💳 Payment History
 
-    <tbody>
+</h3>
 
-    <%
-    try {
-        Connection con = DBConnection.getConnection();
-        PreparedStatement ps = con.prepareStatement(
-            "SELECT * FROM payments WHERE user_email=?"
-        );
+<!-- 🔥 PAYMENT CARD -->
 
-        ps.setString(1, email);
-        ResultSet rs = ps.executeQuery();
+<div class="card shadow-sm border-0">
 
-        while (rs.next()) {
-    %>
+<div class="card-body">
 
-    <tr>
-        <td><%= rs.getString("amount") %></td>
-        <td><%= rs.getString("status") %></td>
-        <td><%= rs.getString("payment_date") %></td>
-    </tr>
+<div class="table-responsive">
 
-    <%
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
+<table class="table table-bordered table-striped table-hover align-middle text-center">
+
+<thead class="table-dark">
+
+<tr>
+
+    <th>Amount</th>
+
+    <th>Status</th>
+
+    <th>Date</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<%
+try {
+
+    Connection con = DBConnection.getConnection();
+
+    PreparedStatement ps = con.prepareStatement(
+
+        "SELECT * FROM payments " +
+        "WHERE user_email=? " +
+        "ORDER BY payment_date DESC"
+    );
+
+    ps.setString(1, email);
+
+    ResultSet rs = ps.executeQuery();
+
+    boolean hasData = false;
+
+    while (rs.next()) {
+
+        hasData = true;
+
+        String status = rs.getString("status");
+%>
+
+<tr>
+
+    <!-- AMOUNT -->
+
+    <td class="fw-bold text-success">
+
+        ₹ <%= rs.getString("amount") %>
+
+    </td>
+
+    <!-- STATUS -->
+
+    <td>
+
+        <span class="badge
+            <%= "Paid".equalsIgnoreCase(status)
+                ? "bg-success"
+                : "bg-warning text-dark" %>">
+
+            <%= status %>
+
+        </span>
+
+    </td>
+
+    <!-- DATE -->
+
+    <td>
+
+        <%= rs.getString("payment_date") %>
+
+    </td>
+
+</tr>
+
+<%
     }
-    %>
 
-    </tbody>
+    if (!hasData) {
+%>
+
+<tr>
+
+    <td colspan="3"
+        class="text-center text-danger py-4">
+
+        No payment records found
+
+    </td>
+
+</tr>
+
+<%
+    }
+
+} catch (Exception e) {
+
+    e.printStackTrace();
+}
+%>
+
+</tbody>
 
 </table>
-```
+
+</div>
+
+</div>
+
+</div>
+
+<!-- 🔙 BACK BUTTON -->
+
+<div class="text-center mt-4">
+
+<a href="dashboard.jsp"
+   class="btn btn-secondary w-100 w-md-auto px-4">
+
+    Back to Dashboard
+
+</a>
+
+</div>
 
 </div>
 

@@ -1,12 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 pageEncoding="UTF-8"%>
+
 <%@ page import="java.sql.*" %>
 <%@ page import="com.mess.db.DBConnection" %>
 
 <%
 if (session.getAttribute("email") == null) {
-response.sendRedirect("../login.jsp");
-return;
+
+    response.sendRedirect("../login.jsp");
+
+    return;
 }
 
 String email = (String) session.getAttribute("email");
@@ -14,32 +17,42 @@ String email = (String) session.getAttribute("email");
 boolean allowed = false;
 
 try {
-Connection con = DBConnection.getConnection();
 
+    Connection con = DBConnection.getConnection();
 
-PreparedStatement ps = con.prepareStatement(
-    "SELECT * FROM subscription WHERE user_email=? ORDER BY end_date DESC LIMIT 1"
-);
+    PreparedStatement ps = con.prepareStatement(
 
-ps.setString(1, email);
-ResultSet rs = ps.executeQuery();
+        "SELECT * FROM subscription " +
+        "WHERE user_email=? " +
+        "ORDER BY end_date DESC LIMIT 1"
+    );
 
-if (rs.next()) {
-    java.sql.Date endDate = rs.getDate("end_date");
+    ps.setString(1, email);
 
-    if (endDate.getTime() >= System.currentTimeMillis()) {
-        allowed = true;
+    ResultSet rs = ps.executeQuery();
+
+    if (rs.next()) {
+
+        java.sql.Date endDate = rs.getDate("end_date");
+
+        if (endDate.getTime() >= System.currentTimeMillis()) {
+
+            allowed = true;
+        }
     }
-}
-
 
 } catch (Exception e) {
-e.printStackTrace();
+
+    e.printStackTrace();
 }
 
 if (!allowed) {
-response.sendRedirect("subscription.jsp?msg=Please subscribe to continue&type=error");
-return;
+
+    response.sendRedirect(
+        "subscription.jsp?msg=Please subscribe to continue&type=error"
+    );
+
+    return;
 }
 %>
 
@@ -47,82 +60,171 @@ return;
 
 <html>
 <head>
+
 <meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1">
+
 <title>Today's Menu</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet">
+
 </head>
 
-<body>
+<body class="bg-light">
+
+<!-- 🔥 NAVBAR -->
 
 <nav class="navbar navbar-dark bg-dark">
+
     <div class="container-fluid">
-        <span class="navbar-brand">Today's Menu</span>
-        <a href="dashboard.jsp" class="btn btn-light">Back</a>
+
+        <span class="navbar-brand">
+            Today's Menu
+        </span>
+
+        <a href="dashboard.jsp"
+           class="btn btn-light btn-sm">
+
+            Back
+
+        </a>
+
     </div>
+
 </nav>
 
-<div class="container mt-4">
+<div class="container py-4">
 
-```
-<h3 class="mb-3">Today's Menu</h3>
+<!-- 🔥 PAGE TITLE -->
 
-<table class="table table-bordered table-striped">
+<h3 class="mb-4 text-center">
 
-    <thead class="table-dark">
-        <tr>
-            <th>Meal Type</th>
-            <th>Description</th>
-        </tr>
-    </thead>
+    🍽️ Today's Menu
 
-    <tbody>
+</h3>
 
-    <%
-    try {
-        Connection con = DBConnection.getConnection();
+<div class="row">
 
-        PreparedStatement ps = con.prepareStatement(
-            "SELECT * FROM menu WHERE meal_date = CURDATE()"
-        );
+<%
+try {
 
-        ResultSet rs = ps.executeQuery();
+    Connection con = DBConnection.getConnection();
 
-        boolean hasData = false;
+    PreparedStatement ps = con.prepareStatement(
 
-        while (rs.next()) {
-            hasData = true;
-    %>
+        "SELECT * FROM menu " +
+        "WHERE meal_date = CURDATE()"
+    );
 
-    <tr>
-        <td><%= rs.getString("meal_type") %></td>
-        <td><%= rs.getString("description") %></td>
-    </tr>
+    ResultSet rs = ps.executeQuery();
 
-    <%
+    boolean hasData = false;
+
+    while (rs.next()) {
+
+        hasData = true;
+
+        String mealType = rs.getString("meal_type");
+
+        String description = rs.getString("description");
+
+        String cardColor = "primary";
+
+        String emoji = "🍽️";
+
+        if ("Lunch".equalsIgnoreCase(mealType)) {
+
+            cardColor = "success";
+
+            emoji = "🍛";
+
+        } else if ("Dinner".equalsIgnoreCase(mealType)) {
+
+            cardColor = "primary";
+
+            emoji = "🍽️";
+
+        } else if ("Special".equalsIgnoreCase(mealType)) {
+
+            cardColor = "warning";
+
+            emoji = "🎉";
         }
+%>
 
-        if (!hasData) {
-    %>
+<!-- 🔥 MENU CARD -->
 
-    <tr>
-        <td colspan="2" class="text-center text-danger">
-            No menu available for today
-        </td>
-    </tr>
+<div class="col-lg-6 col-md-6 col-sm-12 mb-4">
 
-    <%
-        }
+<div class="card shadow-sm border-0 h-100">
 
-    } catch (Exception e) {
-        e.printStackTrace();
+<div class="card-header bg-<%= cardColor %> text-white text-center">
+
+<h4 class="mb-0">
+
+    <%= emoji %>
+    <%= mealType %>
+
+</h4>
+
+</div>
+
+<div class="card-body">
+
+<p class="mb-0 fs-5">
+
+    <%= description %>
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<%
     }
-    %>
 
-    </tbody>
+    if (!hasData) {
+%>
 
-</table>
-```
+<div class="col-12">
+
+<div class="alert alert-danger text-center shadow-sm">
+
+    No menu available for today
+
+</div>
+
+</div>
+
+<%
+    }
+
+} catch (Exception e) {
+
+    e.printStackTrace();
+}
+%>
+
+</div>
+
+<!-- 🔙 BACK BUTTON -->
+
+<div class="text-center mt-3">
+
+<a href="dashboard.jsp"
+   class="btn btn-secondary w-100 w-md-auto px-4">
+
+    Back to Dashboard
+
+</a>
+
+</div>
 
 </div>
 

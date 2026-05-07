@@ -3,10 +3,14 @@
 
 <%
 String email = (String) session.getAttribute("email");
+
 String role = (String) session.getAttribute("role");
 
 if (email == null || role == null || !role.equals("admin")) {
-response.sendRedirect("../login.jsp");
+
+    response.sendRedirect("../login.jsp");
+
+    return;
 }
 %>
 
@@ -14,80 +18,256 @@ response.sendRedirect("../login.jsp");
 
 <html>
 <head>
+
 <meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1">
+
 <title>Manage Users</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet">
 
 </head>
 
-<body>
+<body class="bg-light">
+
+<!-- 🔥 NAVBAR -->
 
 <nav class="navbar navbar-dark bg-dark">
-    <div class="container-fluid">
-        <span class="navbar-brand">Manage Users</span>
-        <a href="dashboard.jsp" class="btn btn-light">Back</a>
-    </div>
+
+<div class="container-fluid">
+
+<span class="navbar-brand">
+
+    Manage Users
+
+</span>
+
+<a href="dashboard.jsp"
+   class="btn btn-light btn-sm">
+
+    Back
+
+</a>
+
+</div>
+
 </nav>
 
-<div class="container mt-4">
+<div class="container py-4">
 
-```
-<h3 class="mb-3">User List</h3>
+<!-- 🔥 PAGE TITLE -->
 
-<table class="table table-bordered table-striped table-hover">
+<h3 class="mb-4 text-center text-md-start">
 
-    <thead class="table-dark">
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Status</th>
-            <th>Action</th>
-        </tr>
-    </thead>
+    &#128101; User List
 
-    <tbody>
+</h3>
 
-    <%
-    try {
-        Connection con = DBConnection.getConnection();
-        Statement st = con.createStatement();
-        ResultSet rs = st.executeQuery("SELECT * FROM users");
+<!-- 🔥 USER TABLE CARD -->
 
-        while (rs.next()) {
-    %>
+<div class="card shadow-sm border-0">
 
-    <tr>
-        <td><%= rs.getString("name") %></td>
-        <td><%= rs.getString("email") %></td>
-        <td>
-            <span class="badge 
-                <%= rs.getString("status").equals("approved") ? "bg-success" : "bg-warning" %>">
-                <%= rs.getString("status") %>
-            </span>
-        </td>
+<div class="card-body">
 
-        <td>
-            <% if (rs.getString("status").equals("pending")) { %>
-                <a href="../approveUser?email=<%= rs.getString("email") %>" 
-                   class="btn btn-success btn-sm">Approve</a>
-            <% } else { %>
-                <span class="text-success">Approved</span>
-            <% } %>
-        </td>
-    </tr>
+<div class="table-responsive">
 
-    <%
-        }
-    } catch(Exception e) {
-        e.printStackTrace();
+<table class="table table-bordered table-striped table-hover align-middle">
+
+<thead class="table-dark">
+
+<tr>
+
+    <th>Name</th>
+
+    <th>Email</th>
+
+    <th>Phone Number</th>
+
+    <th>Status</th>
+
+    <th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<%
+try {
+
+    Connection con = DBConnection.getConnection();
+
+    Statement st = con.createStatement();
+
+    // ✅ FIXED QUERY
+    ResultSet rs = st.executeQuery(
+
+        "SELECT * FROM users ORDER BY name ASC"
+    );
+
+    boolean hasData = false;
+
+    while (rs.next()) {
+
+        hasData = true;
+%>
+
+<tr>
+
+<!-- NAME -->
+
+<td class="fw-semibold">
+
+    <%= rs.getString("name") %>
+
+</td>
+
+<!-- EMAIL -->
+
+<td>
+
+    <%= rs.getString("email") %>
+
+</td>
+
+<!-- PHONE -->
+
+<td>
+
+<%
+String phone = rs.getString("phone");
+
+if (phone != null && !phone.isEmpty()) {
+%>
+
+    <%= phone %>
+
+<%
+} else {
+%>
+
+<span class="text-danger">
+
+    Not Available
+
+</span>
+
+<%
+}
+%>
+
+</td>
+
+<!-- STATUS -->
+
+<td>
+
+<span class="badge
+    <%= rs.getString("status").equals("approved")
+        ? "bg-success"
+        : "bg-warning text-dark" %>">
+
+    <%= rs.getString("status") %>
+
+</span>
+
+</td>
+
+<!-- ACTION -->
+
+<td>
+
+<%
+if (rs.getString("status").equals("pending")) {
+%>
+
+<a href="../approveUser?email=<%= rs.getString("email") %>"
+   class="btn btn-success btn-sm w-100">
+
+    Approve
+
+</a>
+
+<%
+} else {
+%>
+
+<span class="text-success fw-bold">
+
+    Approved
+
+</span>
+
+<%
+}
+%>
+
+</td>
+
+</tr>
+
+<%
     }
-    %>
 
-    </tbody>
+    // ✅ NO DATA MESSAGE
+    if (!hasData) {
+%>
+
+<tr>
+
+<td colspan="5"
+    class="text-center text-danger py-4">
+
+    No users found
+
+</td>
+
+</tr>
+
+<%
+    }
+
+} catch(Exception e) {
+
+    out.println(
+
+        "<tr>" +
+        "<td colspan='5' class='text-danger text-center'>" +
+        "Database Error: " + e.getMessage() +
+        "</td>" +
+        "</tr>"
+    );
+
+    e.printStackTrace();
+}
+%>
+
+</tbody>
 
 </table>
-```
+
+</div>
+
+</div>
+
+</div>
+
+<!-- 🔙 BACK BUTTON -->
+
+<div class="text-center mt-4">
+
+<a href="dashboard.jsp"
+   class="btn btn-secondary w-100 w-md-auto px-4">
+
+    Back to Dashboard
+
+</a>
+
+</div>
 
 </div>
 

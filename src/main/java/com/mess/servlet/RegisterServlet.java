@@ -15,37 +15,57 @@ import com.mess.db.DBConnection;
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
 
-
-protected void doPost(HttpServletRequest request, HttpServletResponse response)
+protected void doPost(HttpServletRequest request,
+                      HttpServletResponse response)
         throws ServletException, IOException {
 
     String name = request.getParameter("name");
+
     String email = request.getParameter("email");
+
+    String phone = request.getParameter("phone");
+
     String password = request.getParameter("password");
 
     try {
+
         Connection con = DBConnection.getConnection();
 
-        String query = "INSERT INTO users(name, email, password) VALUES (?, ?, ?)";
+        String query =
+
+            "INSERT INTO users(name, email, phone, password) " +
+            "VALUES (?, ?, ?, ?)";
+
         PreparedStatement ps = con.prepareStatement(query);
 
         ps.setString(1, name);
+
         ps.setString(2, email);
-        ps.setString(3, password);
+
+        ps.setString(3, phone);
+
+        ps.setString(4, password);
 
         int result = ps.executeUpdate();
 
         if (result > 0) {
-        	response.sendRedirect("login.jsp?msg=Registration Successful&type=success");
+
+            response.sendRedirect(
+
+                "login.jsp?msg=Registration Successful&type=success"
+            );
+
         } else {
-            response.getWriter().println("Registration Failed");
+
+            response.getWriter().println(
+                "Registration Failed"
+            );
         }
 
     } catch (Exception e) {
+
         e.printStackTrace();
     }
 }
 
 }
-
-

@@ -1,5 +1,7 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-pageEncoding="UTF-8"%>
+<%@ page language="java"
+         contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8"%>
+
 <%@ page import="java.sql.*" %>
 <%@ page import="com.mess.db.DBConnection" %>
 
@@ -7,46 +9,83 @@ pageEncoding="UTF-8"%>
 String role = (String) session.getAttribute("role");
 
 if (role == null || !role.equals("admin")) {
-response.sendRedirect("../login.jsp");
-return;
+
+    response.sendRedirect("../login.jsp");
+
+    return;
 }
 
 // 📊 VARIABLES
 int totalUsers = 0;
+
 int activeSubs = 0;
+
 int lunchCount = 0;
+
 int dinnerCount = 0;
 
 try {
-Connection con = DBConnection.getConnection();
-Statement st = con.createStatement();
 
+    Connection con = DBConnection.getConnection();
 
-// 👥 TOTAL USERS
-ResultSet rs1 = st.executeQuery("SELECT COUNT(*) FROM users WHERE role='user'");
-if (rs1.next()) totalUsers = rs1.getInt(1);
+    Statement st = con.createStatement();
 
-// 💳 ACTIVE SUBSCRIPTIONS
-ResultSet rs2 = st.executeQuery(
-    "SELECT COUNT(DISTINCT user_email) FROM subscription WHERE end_date >= CURDATE()"
-);
-if (rs2.next()) activeSubs = rs2.getInt(1);
+    // 👥 TOTAL USERS
+    ResultSet rs1 = st.executeQuery(
 
-// 🍛 LUNCH COUNT
-ResultSet rs3 = st.executeQuery(
-    "SELECT COUNT(*) FROM attendance WHERE meal_type='Lunch' AND status='Present' AND meal_date=CURDATE()"
-);
-if (rs3.next()) lunchCount = rs3.getInt(1);
+        "SELECT COUNT(*) FROM users " +
+        "WHERE role='user'"
+    );
 
-// 🍽️ DINNER COUNT
-ResultSet rs4 = st.executeQuery(
-    "SELECT COUNT(*) FROM attendance WHERE meal_type='Dinner' AND status='Present' AND meal_date=CURDATE()"
-);
-if (rs4.next()) dinnerCount = rs4.getInt(1);
+    if (rs1.next()) {
 
+        totalUsers = rs1.getInt(1);
+    }
+
+    // 💳 ACTIVE SUBSCRIPTIONS
+    ResultSet rs2 = st.executeQuery(
+
+        "SELECT COUNT(DISTINCT user_email) " +
+        "FROM subscription " +
+        "WHERE end_date >= CURDATE()"
+    );
+
+    if (rs2.next()) {
+
+        activeSubs = rs2.getInt(1);
+    }
+
+    // 🍛 LUNCH COUNT
+    ResultSet rs3 = st.executeQuery(
+
+        "SELECT COUNT(*) FROM attendance " +
+        "WHERE meal_type='Lunch' " +
+        "AND status='Present' " +
+        "AND meal_date=CURDATE()"
+    );
+
+    if (rs3.next()) {
+
+        lunchCount = rs3.getInt(1);
+    }
+
+    // 🍽️ DINNER COUNT
+    ResultSet rs4 = st.executeQuery(
+
+        "SELECT COUNT(*) FROM attendance " +
+        "WHERE meal_type='Dinner' " +
+        "AND status='Present' " +
+        "AND meal_date=CURDATE()"
+    );
+
+    if (rs4.next()) {
+
+        dinnerCount = rs4.getInt(1);
+    }
 
 } catch (Exception e) {
-e.printStackTrace();
+
+    e.printStackTrace();
 }
 %>
 
@@ -54,100 +93,309 @@ e.printStackTrace();
 
 <html>
 <head>
+
 <meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1">
+
 <title>Admin Dashboard</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet">
+
 </head>
 
-<body>
+<body class="bg-light">
 
 <!-- 🔥 NAVBAR -->
 
 <nav class="navbar navbar-dark bg-dark">
-    <div class="container-fluid">
-        <span class="navbar-brand">Smart Mess - Admin</span>
-        <a href="../logout" class="btn btn-danger">Logout</a>
-    </div>
+
+<div class="container-fluid">
+
+<span class="navbar-brand">
+
+    Smart Mess - Admin
+
+</span>
+
+<a href="../logout"
+   class="btn btn-danger btn-sm">
+
+    Logout
+
+</a>
+
+</div>
+
 </nav>
 
-<div class="container mt-4">
+<div class="container py-4">
 
-<h3>Welcome, <%= session.getAttribute("user") %></h3>
+<!-- 👋 WELCOME -->
+
+<div class="mb-4">
+
+<h3 class="text-center text-md-start">
+
+    Welcome,
+    <%= session.getAttribute("user") %>
+
+</h3>
+
+<p class="text-muted text-center text-md-start mb-0">
+
+    Admin Control Panel
+
+</p>
+
+</div>
 
 <!-- 📊 DASHBOARD STATS -->
 
-<div class="row mt-4">
+<div class="row">
 
+<!-- TOTAL USERS -->
 
-<div class="col-md-3 mb-3">
-    <div class="card text-center bg-primary text-white">
-        <div class="card-body">
-            <h5>Total Users</h5>
-            <h3><%= totalUsers %></h3>
-        </div>
-    </div>
+<div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+
+<div class="card shadow-sm border-0 bg-primary text-white h-100">
+
+<div class="card-body text-center">
+
+<h5 class="mb-3">
+
+    👥 Total Users
+
+</h5>
+
+<h2>
+
+    <%= totalUsers %>
+
+</h2>
+
 </div>
 
-<div class="col-md-3 mb-3">
-    <div class="card text-center bg-success text-white">
-        <div class="card-body">
-            <h5>Active Subscriptions</h5>
-            <h3><%= activeSubs %></h3>
-        </div>
-    </div>
 </div>
 
-<div class="col-md-3 mb-3">
-    <div class="card text-center bg-warning text-dark">
-        <div class="card-body">
-            <h5>Lunch Count</h5>
-            <h3><%= lunchCount %></h3>
-        </div>
-    </div>
 </div>
 
-<div class="col-md-3 mb-3">
-    <div class="card text-center bg-danger text-white">
-        <div class="card-body">
-            <h5>Dinner Count</h5>
-            <h3><%= dinnerCount %></h3>
-        </div>
-    </div>
+<!-- ACTIVE SUBS -->
+
+<div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+
+<div class="card shadow-sm border-0 bg-success text-white h-100">
+
+<div class="card-body text-center">
+
+<h5 class="mb-3">
+
+    💳 Active Subscriptions
+
+</h5>
+
+<h2>
+
+    <%= activeSubs %>
+
+</h2>
+
 </div>
 
+</div>
+
+</div>
+
+<!-- LUNCH -->
+
+<div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+
+<div class="card shadow-sm border-0 bg-warning text-dark h-100">
+
+<div class="card-body text-center">
+
+<h5 class="mb-3">
+
+    🍛 Lunch Count
+
+</h5>
+
+<h2>
+
+    <%= lunchCount %>
+
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- DINNER -->
+
+<div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+
+<div class="card shadow-sm border-0 bg-danger text-white h-100">
+
+<div class="card-body text-center">
+
+<h5 class="mb-3">
+
+    🍽️ Dinner Count
+
+</h5>
+
+<h2>
+
+    <%= dinnerCount %>
+
+</h2>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 
 <!-- 🔗 ACTION BUTTONS -->
 
-<div class="row mt-4">
+<div class="card shadow-sm border-0">
 
+<div class="card-body">
 
-<div class="col-md-4 mb-3">
-    <a href="manage_users.jsp" class="btn btn-primary w-100">Manage Users</a>
+<h4 class="mb-4 text-center">
+
+    ⚙️ Admin Features
+
+</h4>
+
+<div class="row">
+
+<!-- MANAGE USERS -->
+
+<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+
+<a href="manage_users.jsp"
+   class="btn btn-primary w-100 py-3">
+
+    Manage Users
+
+</a>
+
 </div>
 
-<div class="col-md-4 mb-3">
-    <a href="add_menu.jsp" class="btn btn-success w-100">Manage Menu</a>
+<!-- MENU -->
+
+<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+
+<a href="add_menu.jsp"
+   class="btn btn-success w-100 py-3">
+
+    Manage Menu
+
+</a>
+
 </div>
 
-<div class="col-md-4 mb-3">
-    <a href="view_attendance.jsp" class="btn btn-warning w-100">View Attendance</a>
+<!-- ANNOUNCEMENT -->
+
+<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+
+<a href="add_announcement.jsp"
+   class="btn btn-warning w-100 py-3">
+
+    Add Announcement
+
+</a>
+
 </div>
 
-<div class="col-md-4 mb-3">
-    <a href="view_payments.jsp" class="btn btn-info w-100">View Payments</a>
+<!-- ATTENDANCE -->
+
+<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+
+<a href="view_attendance.jsp"
+   class="btn btn-warning w-100 py-3">
+
+    View Attendance
+
+</a>
+
 </div>
 
-<div class="col-md-4 mb-3">
-    <a href="view_subscription.jsp" class="btn btn-secondary w-100">View Subscriptions</a>
+<!-- MEAL VERIFICATION -->
+
+<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+
+<a href="meal_verification.jsp"
+   class="btn btn-danger w-100 py-3">
+
+    Meal Verification
+
+</a>
+
 </div>
 
-<div class="col-md-4 mb-3">
-    <a href="view_feedback.jsp" class="btn btn-dark w-100">View Feedback</a>
+<!-- PAYMENTS -->
+
+<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+
+<a href="view_payments.jsp"
+   class="btn btn-info w-100 py-3">
+
+    View Payments
+
+</a>
+
 </div>
 
+<!-- SUBSCRIPTIONS -->
+
+<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+
+<a href="view_subscription.jsp"
+   class="btn btn-secondary w-100 py-3">
+
+    View Subscriptions
+
+</a>
+
+</div>
+
+<!-- FEEDBACK -->
+
+<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+
+<a href="view_feedback.jsp"
+   class="btn btn-dark w-100 py-3">
+
+    View Feedback
+
+</a>
+
+</div>
+
+<!-- REPORTS -->
+
+<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+
+<a href="reports.jsp"
+   class="btn btn-primary w-100 py-3">
+
+    Reports
+
+</a>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 

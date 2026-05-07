@@ -5,8 +5,10 @@
 String role = (String) session.getAttribute("role");
 
 if (role == null || !role.equals("admin")) {
-response.sendRedirect("../login.jsp");
-return;
+
+    response.sendRedirect("../login.jsp");
+
+    return;
 }
 %>
 
@@ -14,66 +16,176 @@ return;
 
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Feedback</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1">
+
+<title>User Feedback</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet">
+
 </head>
 
-<body>
+<body class="bg-light">
+
+<!-- 🔥 NAVBAR -->
 
 <nav class="navbar navbar-dark bg-dark">
-    <div class="container-fluid">
-        <span class="navbar-brand">User Feedback</span>
-        <a href="dashboard.jsp" class="btn btn-light">Back</a>
-    </div>
+
+<div class="container-fluid">
+
+<span class="navbar-brand">
+
+    User Feedback
+
+</span>
+
+<a href="dashboard.jsp"
+   class="btn btn-light btn-sm">
+
+    Back
+
+</a>
+
+</div>
+
 </nav>
 
-<div class="container mt-4">
+<div class="container py-4">
 
-<h3>User Feedback</h3>
+<!-- 🔥 PAGE TITLE -->
 
-<table class="table table-bordered table-striped">
+<h3 class="mb-4 text-center text-md-start">
+
+    💬 User Feedback
+
+</h3>
+
+<!-- 📋 FEEDBACK TABLE -->
+
+<div class="card shadow-sm border-0">
+
+<div class="card-body">
+
+<div class="table-responsive">
+
+<table class="table table-bordered table-striped table-hover align-middle">
 
 <thead class="table-dark">
+
 <tr>
+
     <th>User</th>
+
     <th>Message</th>
+
     <th>Date</th>
+
 </tr>
+
 </thead>
 
 <tbody>
 
 <%
 try {
-Connection con = DBConnection.getConnection();
-Statement st = con.createStatement();
 
+    Connection con = DBConnection.getConnection();
 
-ResultSet rs = st.executeQuery("SELECT * FROM feedback ORDER BY created_at DESC");
+    Statement st = con.createStatement();
 
-while (rs.next()) {
+    ResultSet rs = st.executeQuery(
 
+        "SELECT * FROM feedback " +
+        "ORDER BY created_at DESC"
+    );
 
+    boolean hasData = false;
+
+    while (rs.next()) {
+
+        hasData = true;
 %>
 
 <tr>
-    <td>Anonymous</td>
-    <td><%= rs.getString("message") %></td>
-    <td><%= rs.getString("created_at") %></td>
+
+<!-- USER -->
+
+<td class="fw-semibold text-primary">
+
+    Anonymous
+
+</td>
+
+<!-- MESSAGE -->
+
+<td style="min-width:250px;">
+
+    <%= rs.getString("message") %>
+
+</td>
+
+<!-- DATE -->
+
+<td>
+
+    <%= rs.getString("created_at") %>
+
+</td>
+
 </tr>
 
 <%
-}
+    }
+
+    if (!hasData) {
+%>
+
+<tr>
+
+<td colspan="3"
+    class="text-center text-danger py-4">
+
+    No feedback found
+
+</td>
+
+</tr>
+
+<%
+    }
+
 } catch (Exception e) {
-e.printStackTrace();
+
+    e.printStackTrace();
 }
 %>
 
 </tbody>
 
 </table>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- 🔙 BACK BUTTON -->
+
+<div class="text-center mt-4">
+
+<a href="dashboard.jsp"
+   class="btn btn-secondary w-100 w-md-auto px-4">
+
+    Back to Dashboard
+
+</a>
+
+</div>
 
 </div>
 
