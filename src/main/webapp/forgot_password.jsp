@@ -1,5 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-pageEncoding="UTF-8"%>
+<%@ page language="java"
+         contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8"%>
 
 <!DOCTYPE html>
 
@@ -8,9 +9,20 @@ pageEncoding="UTF-8"%>
 
 <meta charset="UTF-8">
 
+<meta name="viewport"
+      content="width=device-width, initial-scale=1">
+
 <title>Forgot Password - Smart Mess</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap CSS -->
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet">
+
+<!-- Custom CSS -->
+
+<link rel="stylesheet"
+      href="css/style.css">
 
 </head>
 
@@ -18,115 +30,137 @@ pageEncoding="UTF-8"%>
 
 <div class="container">
 
-    <div class="row justify-content-center mt-5">
+<div class="row justify-content-center align-items-center min-vh-100">
 
-        <div class="col-md-5">
+<div class="col-xl-5
+            col-lg-6
+            col-md-7
+            col-sm-9
+            col-11">
 
-            <div class="card shadow p-4">
+<div class="card shadow-lg p-4">
 
-                <h3 class="text-center mb-4">
-                    Forgot Password
-                </h3>
+<!-- TITLE -->
 
-                <%
-                String msg = request.getParameter("msg");
+<h3 class="text-center mb-4 fw-bold">
 
-                String type = request.getParameter("type");
+    Forgot Password
 
-                if (msg != null) {
-                %>
+</h3>
 
-                <div class="alert
-                    <%= "success".equals(type)
-                        ? "alert-success"
-                        : "alert-danger" %>">
+<!-- ALERT MESSAGE -->
 
-                    <%= msg %>
+<%
+String msg = request.getParameter("msg");
 
-                </div>
+String type = request.getParameter("type");
 
-                <%
-                }
-                %>
+if (msg != null) {
+%>
 
-                <form action="forgotPassword" method="post">
+<div class="alert
+    <%= "success".equals(type)
+        ? "alert-success"
+        : "alert-danger" %>">
 
-                    <!-- EMAIL -->
+    <%= msg %>
 
-                    <div class="mb-3">
+</div>
 
-                        <label class="form-label">
-                            Email
-                        </label>
+<%
+}
+%>
 
-                        <input type="email"
-                               name="email"
-                               class="form-control"
-                               placeholder="Enter Registered Email"
-                               required>
+<!-- FORM -->
 
-                    </div>
+<form action="forgotPassword"
+      method="post">
 
-                    <!-- PHONE -->
+<!-- EMAIL -->
 
-                    <div class="mb-3">
+<div class="mb-3">
 
-                        <label class="form-label">
-                            Phone Number
-                        </label>
+<label class="form-label fw-semibold">
 
-                        <input type="text"
-                               name="phone"
-                               class="form-control"
-                               placeholder="Enter Registered Phone Number"
-                               pattern="[0-9]{10}"
-                               maxlength="10"
-                               required>
+    Email
 
-                    </div>
+</label>
 
-                    <!-- NEW PASSWORD -->
+<input type="email"
+       name="email"
+       class="form-control"
+       placeholder="Enter Registered Email"
+       required>
 
-                    <div class="mb-3">
+</div>
 
-                        <label class="form-label">
-                            New Password
-                        </label>
+<!-- PHONE -->
 
-                        <input type="password"
-                               name="password"
-                               class="form-control"
-                               placeholder="Enter New Password"
-                               required>
+<div class="mb-3">
 
-                    </div>
+<label class="form-label fw-semibold">
 
-                    <!-- BUTTON -->
+    Phone Number
 
-                    <button type="submit"
-                            class="btn btn-primary w-100">
+</label>
 
-                        Reset Password
+<input type="text"
+       name="phone"
+       class="form-control"
+       placeholder="Enter Registered Phone Number"
+       pattern="[0-9]{10}"
+       maxlength="10"
+       required>
 
-                    </button>
+</div>
 
-                </form>
+<!-- NEW PASSWORD -->
 
-                <p class="mt-3 text-center">
+<div class="mb-4">
 
-                    <a href="login.jsp">
+<label class="form-label fw-semibold">
 
-                        Back to Login
+    New Password
 
-                    </a>
+</label>
 
-                </p>
+<input type="password"
+       name="password"
+       class="form-control"
+       placeholder="Enter New Password"
+       required>
 
-            </div>
+</div>
 
-        </div>
+<!-- BUTTON -->
 
-    </div>
+<button type="submit"
+        class="btn btn-primary w-100 py-2">
+
+    Reset Password
+
+</button>
+
+</form>
+
+<!-- LOGIN LINK -->
+
+<p class="mt-4 text-center mb-0">
+
+<a href="login.jsp"
+   class="text-decoration-none fw-semibold">
+
+    Back to Login
+
+</a>
+
+</p>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 

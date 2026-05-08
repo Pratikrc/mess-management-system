@@ -1,47 +1,62 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-pageEncoding="UTF-8"%>
+<%@ page language="java"
+         contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8"%>
+
 <%@ page import="java.sql.*" %>
 <%@ page import="com.mess.db.DBConnection" %>
 
 <%
 if (session.getAttribute("email") == null) {
-response.sendRedirect("../login.jsp");
-return;
+
+    response.sendRedirect("../login.jsp");
+
+    return;
 }
 
 String email = (String) session.getAttribute("email");
 
 String plan = null;
+
 String startDate = null;
+
 String endDate = null;
+
 boolean active = false;
 
 try {
-Connection con = DBConnection.getConnection();
 
+    Connection con = DBConnection.getConnection();
 
-PreparedStatement ps = con.prepareStatement(
-    "SELECT * FROM subscription WHERE user_email=? ORDER BY end_date DESC LIMIT 1"
-);
+    PreparedStatement ps = con.prepareStatement(
 
-ps.setString(1, email);
-ResultSet rs = ps.executeQuery();
+        "SELECT * FROM subscription " +
+        "WHERE user_email=? " +
+        "ORDER BY end_date DESC LIMIT 1"
+    );
 
-if (rs.next()) {
-    plan = rs.getString("plan_type");
-    startDate = rs.getString("start_date");
-    endDate = rs.getString("end_date");
+    ps.setString(1, email);
 
-    java.sql.Date ed = rs.getDate("end_date");
+    ResultSet rs = ps.executeQuery();
 
-    if (ed.getTime() >= System.currentTimeMillis()) {
-        active = true;
+    if (rs.next()) {
+
+        plan = rs.getString("plan_type");
+
+        startDate = rs.getString("start_date");
+
+        endDate = rs.getString("end_date");
+
+        java.sql.Date ed = rs.getDate("end_date");
+
+        if (ed.getTime() >= System.currentTimeMillis()) {
+
+            active = true;
+        }
     }
-}
-
 
 } catch (Exception e) {
-e.printStackTrace();
+
+    e.printStackTrace();
 }
 %>
 
@@ -49,58 +64,149 @@ e.printStackTrace();
 
 <html>
 <head>
+
 <meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1">
+
 <title>Subscription</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap -->
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet">
+
+<!-- Custom CSS -->
+
+<link rel="stylesheet"
+      href="../css/style.css">
+
 </head>
 
-<body>
+<body class="bg-light">
+
+<!-- 🔥 NAVBAR -->
 
 <nav class="navbar navbar-dark bg-dark">
-    <div class="container-fluid">
-        <span class="navbar-brand">Subscription</span>
-        <a href="dashboard.jsp" class="btn btn-light">Back</a>
-    </div>
+
+<div class="container-fluid">
+
+<span class="navbar-brand">
+
+    Subscription
+
+</span>
+
+<a href="dashboard.jsp"
+   class="btn btn-light btn-sm">
+
+    Back
+
+</a>
+
+</div>
+
 </nav>
 
-<div class="container mt-4">
+<div class="container py-4">
 
 <div class="row justify-content-center">
-<div class="col-md-5">
 
-<div class="card shadow p-4 text-center">
+<div class="col-lg-5 col-md-7 col-sm-12">
 
-<h3 class="mb-3">Your Subscription</h3>
+<!-- 🔥 SUBSCRIPTION CARD -->
+
+<div class="card shadow-sm border-0">
+
+<div class="card-body p-4 text-center">
+
+<h3 class="mb-4">
+
+    📅 Your Subscription
+
+</h3>
 
 <% if (plan != null) { %>
 
-<p><strong>Plan:</strong> <%= plan %></p>
-<p><strong>Start Date:</strong> <%= startDate %></p>
-<p><strong>End Date:</strong> <%= endDate %></p>
+<!-- PLAN -->
 
-<p>
-<strong>Status:</strong> 
-<span class="<%= active ? "text-success" : "text-danger" %>">
-    <%= active ? "Active" : "Expired" %>
-</span>
+<div class="card bg-light border-0 p-3 mb-3">
+
+<p class="mb-2">
+
+    <strong>Plan:</strong>
+    <%= plan %>
+
 </p>
+
+<p class="mb-2">
+
+    <strong>Start Date:</strong>
+    <%= startDate %>
+
+</p>
+
+<p class="mb-2">
+
+    <strong>End Date:</strong>
+    <%= endDate %>
+
+</p>
+
+<p class="mb-0">
+
+<strong>Status:</strong>
+
+<span class="badge
+    <%= active
+        ? "bg-success"
+        : "bg-danger" %>">
+
+    <%= active
+        ? "Active"
+        : "Expired" %>
+
+</span>
+
+</p>
+
+</div>
 
 <% } else { %>
 
-<p class="text-danger">No subscription found</p>
+<div class="alert alert-danger">
+
+    No subscription found
+
+</div>
 
 <% } %>
 
-<hr>
+<!-- BUTTON -->
 
-<a href="payment.jsp" class="btn btn-warning w-100">
+<a href="payment.jsp"
+   class="btn btn-warning w-100 py-2">
+
     Buy / Renew Plan
+
+</a>
+
+<!-- BACK BUTTON -->
+
+<a href="dashboard.jsp"
+   class="btn btn-secondary w-100 py-2 mt-3">
+
+    Back to Dashboard
+
 </a>
 
 </div>
 
 </div>
+
+</div>
+
 </div>
 
 </div>

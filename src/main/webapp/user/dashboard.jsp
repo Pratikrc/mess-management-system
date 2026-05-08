@@ -1,45 +1,63 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-pageEncoding="UTF-8"%>
+<%@ page language="java"
+         contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8"%>
 
 <%@ page import="java.sql.*" %>
 <%@ page import="com.mess.db.DBConnection" %>
 
 <%
 if (session.getAttribute("email") == null) {
+
     response.sendRedirect("../login.jsp");
+
     return;
 }
 
 String email = (String) session.getAttribute("email");
 
 // ---------------- VARIABLES ----------------
+
 String plan = "None";
+
 String endDate = "";
+
 boolean active = false;
 
 String expiryMsg = "";
+
 String expiryClass = "text-success";
 
 int totalMeals = 0;
+
 double totalPaid = 0;
+
 long daysLeft = 0;
 
 String announcementMsg = "";
+
 String messClosed = "No";
+
 String closeStart = "";
+
 String closeEnd = "";
 
 int skipUsed = 0;
+
 int skipLimit = 3;
 
 // ---------------- DATABASE ----------------
+
 try {
 
     Connection con = DBConnection.getConnection();
 
     // 🔵 SUBSCRIPTION
+
     PreparedStatement ps = con.prepareStatement(
-        "SELECT * FROM subscription WHERE user_email=? ORDER BY end_date DESC LIMIT 1"
+
+        "SELECT * FROM subscription " +
+        "WHERE user_email=? " +
+        "ORDER BY end_date DESC LIMIT 1"
     );
 
     ps.setString(1, email);
@@ -100,8 +118,11 @@ try {
     }
 
     // 🔵 TOTAL MEALS
+
     PreparedStatement ps1 = con.prepareStatement(
-        "SELECT COUNT(*) FROM attendance WHERE user_email=?"
+
+        "SELECT COUNT(*) FROM attendance " +
+        "WHERE user_email=?"
     );
 
     ps1.setString(1, email);
@@ -114,8 +135,11 @@ try {
     }
 
     // 🔵 TOTAL PAYMENT
+
     PreparedStatement ps2 = con.prepareStatement(
-        "SELECT SUM(amount) FROM payments WHERE user_email=? AND status='Paid'"
+
+        "SELECT SUM(amount) FROM payments " +
+        "WHERE user_email=? AND status='Paid'"
     );
 
     ps2.setString(1, email);
@@ -127,7 +151,8 @@ try {
         totalPaid = rs2.getDouble(1);
     }
 
-    // 🔵 ANNOUNCEMENT + MESS CLOSURE
+    // 🔵 ANNOUNCEMENT
+
     PreparedStatement psAnn = con.prepareStatement(
 
         "SELECT * FROM announcement " +
@@ -148,8 +173,11 @@ try {
     }
 
     // 🔵 SKIP COUNT
+
     PreparedStatement psSkip = con.prepareStatement(
-        "SELECT COUNT(*) FROM skip_days WHERE user_email=?"
+
+        "SELECT COUNT(*) FROM skip_days " +
+        "WHERE user_email=?"
     );
 
     psSkip.setString(1, email);
@@ -167,9 +195,11 @@ try {
 }
 
 // 🚫 BLOCK IF NOT ACTIVE
+
 if (!active) {
 
     response.sendRedirect(
+
         "payment.jsp?msg=Please subscribe&type=error"
     );
 
@@ -189,44 +219,164 @@ if (!active) {
 
 <title>User Dashboard</title>
 
+<!-- Bootstrap -->
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet">
+
+<!-- Custom CSS -->
+
+<link rel="stylesheet"
+      href="../css/style.css">
 
 </head>
 
 <body class="bg-light">
 
-<!-- 🔥 NAVBAR -->
+<div class="container-fluid">
 
-<nav class="navbar navbar-dark bg-dark">
+<div class="row">
 
-    <div class="container-fluid">
+<!-- ===================================
+     SIDEBAR
+=================================== -->
 
-        <span class="navbar-brand">
-            Smart Mess - User
-        </span>
+<div class="col-lg-2 col-md-3 bg-dark text-white min-vh-100 p-3">
 
-        <a href="../logout"
-           class="btn btn-danger btn-sm">
+<h3 class="text-center mb-4">
 
-            Logout
+    Smart Mess
 
-        </a>
+</h3>
 
-    </div>
+<hr class="bg-light">
 
-</nav>
+<div class="d-grid gap-2">
 
-<div class="container py-4">
+<a href="dashboard.jsp"
+   class="btn btn-outline-light text-start">
+
+    🏠 Dashboard
+
+</a>
+
+<a href="view_menu.jsp"
+   class="btn btn-outline-light text-start">
+
+    🍽️ View Menu
+
+</a>
+
+<% if ("Yes".equals(messClosed)) { %>
+
+<button class="btn btn-secondary text-start"
+        disabled>
+
+    🚫 Mess Closed
+
+</button>
+
+<% } else { %>
+
+<a href="attendance.jsp"
+   class="btn btn-outline-light text-start">
+
+    📋 Mark Attendance
+
+</a>
+
+<% } %>
+
+<a href="attendance_history.jsp"
+   class="btn btn-outline-light text-start">
+
+    📊 Attendance History
+
+</a>
+
+<a href="subscription.jsp"
+   class="btn btn-outline-light text-start">
+
+    📅 Subscription
+
+</a>
+
+<a href="payment.jsp"
+   class="btn btn-outline-light text-start">
+
+    💳 Payments
+
+</a>
+
+<a href="view_payment.jsp"
+   class="btn btn-outline-light text-start">
+
+    💰 Payment History
+
+</a>
+
+<a href="feedback.jsp"
+   class="btn btn-outline-light text-start">
+
+    💬 Feedback
+
+</a>
+
+<% if ("Yes".equals(messClosed)) { %>
+
+<button class="btn btn-secondary text-start"
+        disabled>
+
+    ⏭️ Skip Disabled
+
+</button>
+
+<% } else { %>
+
+<a href="skip_day.jsp"
+   class="btn btn-outline-light text-start">
+
+    ⏭️ Skip Day
+
+</a>
+
+<% } %>
+
+<a href="../logout"
+   class="btn btn-danger text-start mt-3">
+
+    🚪 Logout
+
+</a>
+
+</div>
+
+</div>
+
+<!-- ===================================
+     MAIN CONTENT
+=================================== -->
+
+<div class="col-lg-10 col-md-9 p-4">
 
 <!-- 👋 WELCOME -->
 
-<h3 class="mb-4 text-center text-md-start">
+<div class="mb-4">
+
+<h3>
 
     Welcome,
     <%= session.getAttribute("user") %>
 
 </h3>
+
+<p class="text-muted">
+
+    Smart Mess User Dashboard
+
+</p>
+
+</div>
 
 <!-- 🔔 ANNOUNCEMENT -->
 
@@ -234,12 +384,18 @@ if (!active) {
 
     <% if ("Yes".equals(messClosed)) { %>
 
-        <div class="alert alert-danger text-center shadow-sm">
+        <div class="alert alert-danger shadow-sm">
 
-            <h5>🚫 Mess Closed</h5>
+            <h5>
+
+                🚫 Mess Closed
+
+            </h5>
 
             <p>
+
                 <b><%= announcementMsg %></b>
+
             </p>
 
             <p>
@@ -255,7 +411,7 @@ if (!active) {
 
             <p class="mb-0">
 
-                Your subscription has been automatically extended.
+                Subscription automatically extended.
 
             </p>
 
@@ -263,7 +419,7 @@ if (!active) {
 
     <% } else { %>
 
-        <div class="alert alert-info text-center shadow-sm">
+        <div class="alert alert-info shadow-sm">
 
             <b>📢 Announcement:</b>
 
@@ -275,127 +431,191 @@ if (!active) {
 
 <% } %>
 
-<!-- 📦 SUBSCRIPTION STATUS -->
+<!-- ===================================
+     DASHBOARD CARDS
+=================================== -->
 
-<div class="card shadow-sm border-0 mb-4">
+<div class="row mb-4">
+
+<!-- TOTAL MEALS -->
+
+<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+
+<div class="card dashboard-card bg-gradient-primary h-100">
 
 <div class="card-body text-center">
 
-<h5 class="mb-3">
-    Subscription Status
+<h5>
+
+    🍛 Total Meals
+
 </h5>
 
-<p>
-    <b>Plan:</b> <%= plan %>
+<h2>
+
+    <%= totalMeals %>
+
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- DAYS LEFT -->
+
+<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+
+<div class="card dashboard-card bg-gradient-warning h-100">
+
+<div class="card-body text-center">
+
+<h5>
+
+    ⏳ Days Remaining
+
+</h5>
+
+<h2>
+
+    <%= daysLeft %>
+
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- TOTAL PAID -->
+
+<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+
+<div class="card dashboard-card bg-gradient-success h-100">
+
+<div class="card-body text-center">
+
+<h5>
+
+    💰 Total Paid
+
+</h5>
+
+<h2>
+
+    ₹ <%= totalPaid %>
+
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ===================================
+     SUBSCRIPTION STATUS
+=================================== -->
+
+<div class="card shadow-sm border-0 mb-4">
+
+<div class="card-body">
+
+<h4 class="mb-4">
+
+    📅 Subscription Status
+
+</h4>
+
+<div class="row">
+
+<div class="col-md-3 mb-3">
+
+<p class="mb-1 text-muted">
+
+    Plan
+
 </p>
 
-<p>
-    <b>Expiry Date:</b> <%= endDate %>
+<h5>
+
+    <%= plan %>
+
+</h5>
+
+</div>
+
+<div class="col-md-3 mb-3">
+
+<p class="mb-1 text-muted">
+
+    Expiry Date
+
 </p>
 
-<p>
+<h5>
 
-<b>Status:</b>
+    <%= endDate %>
 
-<span class="<%= active ? "text-success" : "text-danger" %>">
+</h5>
+
+</div>
+
+<div class="col-md-3 mb-3">
+
+<p class="mb-1 text-muted">
+
+    Status
+
+</p>
+
+<h5 class="<%= active ? "text-success" : "text-danger" %>">
 
     <%= active ? "Active" : "Expired" %>
 
-</span>
+</h5>
+
+</div>
+
+<div class="col-md-3 mb-3">
+
+<p class="mb-1 text-muted">
+
+    Validity
 
 </p>
 
-<p class="mb-0">
-
-<b>Validity:</b>
-
-<span class="<%= expiryClass %>">
+<h5 class="<%= expiryClass %>">
 
     <%= expiryMsg %>
 
-</span>
-
-</p>
+</h5>
 
 </div>
 
 </div>
 
-<!-- 📊 DASHBOARD SUMMARY -->
-
-<div class="row text-center mb-4">
-
-<div class="col-lg-4 col-md-4 col-sm-6 mb-3">
-
-    <div class="card shadow-sm border-0 h-100">
-
-        <div class="card-body">
-
-            <h6>Total Meals</h6>
-
-            <h3 class="text-primary">
-
-                <%= totalMeals %>
-
-            </h3>
-
-        </div>
-
-    </div>
-
-</div>
-
-<div class="col-lg-4 col-md-4 col-sm-6 mb-3">
-
-    <div class="card shadow-sm border-0 h-100">
-
-        <div class="card-body">
-
-            <h6>Days Remaining</h6>
-
-            <h3 class="<%= daysLeft <= 2 ? "text-warning" : "text-success" %>">
-
-                <%= daysLeft %>
-
-            </h3>
-
-        </div>
-
-    </div>
-
-</div>
-
-<div class="col-lg-4 col-md-4 col-sm-12 mb-3">
-
-    <div class="card shadow-sm border-0 h-100">
-
-        <div class="card-body">
-
-            <h6>Total Paid</h6>
-
-            <h3 class="text-success">
-
-                ₹ <%= totalPaid %>
-
-            </h3>
-
-        </div>
-
-    </div>
-
 </div>
 
 </div>
 
-<!-- 🍽️ SKIP DAY -->
+<!-- ===================================
+     SKIP STATUS
+=================================== -->
 
 <div class="card shadow-sm border-0 mb-4">
 
-<div class="card-body text-center">
+<div class="card-body">
 
-<h5 class="mb-3">
-    Skip Days
-</h5>
+<h4 class="mb-3">
+
+    ⏭️ Skip Day Status
+
+</h4>
 
 <p>
 
@@ -406,117 +626,73 @@ Used:
 
 </p>
 
-<% if ("Yes".equals(messClosed)) { %>
+<div class="progress">
 
-    <button class="btn btn-secondary w-100" disabled>
-
-        Mess Closed
-
-    </button>
-
-<% } else if (skipUsed < skipLimit) { %>
-
-    <a href="skip_day.jsp"
-       class="btn btn-danger w-100">
-
-        Skip Today
-
-    </a>
-
-<% } else { %>
-
-    <div class="text-danger fw-bold">
-
-        Skip Limit Reached
-
-    </div>
-
-<% } %>
+<div class="progress-bar bg-danger"
+     style="width:<%= (skipUsed * 100) / skipLimit %>%">
 
 </div>
 
 </div>
 
-<!-- ⚙️ ACTION BUTTONS -->
+</div>
+
+</div>
+
+<!-- ===================================
+     QUICK ACTIONS
+=================================== -->
+
+<div class="card shadow-sm border-0">
+
+<div class="card-body">
+
+<h4 class="mb-4">
+
+    ⚡ Quick Actions
+
+</h4>
 
 <div class="row">
 
 <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
 
-    <a href="view_menu.jsp"
-       class="btn btn-primary w-100 py-2">
+<a href="view_menu.jsp"
+   class="btn btn-primary w-100 py-3">
 
-        View Menu
+    View Menu
 
-    </a>
-
-</div>
-
-<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-
-<% if ("Yes".equals(messClosed)) { %>
-
-    <button class="btn btn-secondary w-100 py-2"
-            disabled>
-
-        Mess Closed
-
-    </button>
-
-<% } else { %>
-
-    <a href="attendance.jsp"
-       class="btn btn-success w-100 py-2">
-
-        Mark Attendance
-
-    </a>
-
-<% } %>
+</a>
 
 </div>
 
 <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
 
-    <a href="attendance_history.jsp"
-       class="btn btn-dark w-100 py-2">
+<a href="attendance_history.jsp"
+   class="btn btn-dark w-100 py-3">
 
-        Attendance History
+    Attendance History
 
-    </a>
-
-</div>
-
-<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-
-    <a href="payment.jsp"
-       class="btn btn-warning w-100 py-2">
-
-        Subscription / Payment
-
-    </a>
+</a>
 
 </div>
 
 <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
 
-    <a href="view_payment.jsp"
-       class="btn btn-info w-100 py-2">
+<a href="payment.jsp"
+   class="btn btn-success w-100 py-3">
 
-        View Payments
+    Payments
 
-    </a>
+</a>
 
 </div>
 
-<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+</div>
 
-    <a href="feedback.jsp"
-       class="btn btn-secondary w-100 py-2">
+</div>
 
-        Give Feedback
-
-    </a>
+</div>
 
 </div>
 

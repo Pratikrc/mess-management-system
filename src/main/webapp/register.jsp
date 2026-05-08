@@ -1,5 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-pageEncoding="UTF-8"%>
+<%@ page language="java"
+         contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8"%>
 
 <!DOCTYPE html>
 
@@ -8,11 +9,20 @@ pageEncoding="UTF-8"%>
 
 <meta charset="UTF-8">
 
+<meta name="viewport"
+      content="width=device-width, initial-scale=1">
+
 <title>Register - Smart Mess</title>
 
 <!-- Bootstrap CSS -->
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet">
+
+<!-- Custom CSS -->
+
+<link rel="stylesheet"
+      href="css/style.css">
 
 </head>
 
@@ -20,131 +30,157 @@ pageEncoding="UTF-8"%>
 
 <div class="container">
 
-    <div class="row justify-content-center mt-5">
+<div class="row justify-content-center align-items-center min-vh-100">
 
-        <div class="col-md-5">
+<div class="col-xl-5
+            col-lg-6
+            col-md-7
+            col-sm-9
+            col-11">
 
-            <div class="card shadow p-4">
+<div class="card shadow-lg p-4">
 
-                <h3 class="text-center mb-3">
-                    User Registration
-                </h3>
+<!-- TITLE -->
 
-                <%
-                String msg = request.getParameter("msg");
+<h3 class="text-center mb-4 fw-bold">
 
-                String type = request.getParameter("type");
+    Smart Mess Registration
 
-                if (msg != null) {
-                %>
+</h3>
 
-                <div class="alert <%= type != null && type.equals("success")
-                        ? "alert-success"
-                        : "alert-danger" %>">
+<!-- ALERT MESSAGE -->
 
-                    <%= msg %>
+<%
+String msg = request.getParameter("msg");
 
-                </div>
+String type = request.getParameter("type");
 
-                <%
-                }
-                %>
+if (msg != null) {
+%>
 
-                <form action="<%=request.getContextPath()%>/register"
-                      method="post">
+<div class="alert
+    <%= type != null && type.equals("success")
+        ? "alert-success"
+        : "alert-danger" %>">
 
-                    <!-- NAME -->
+    <%= msg %>
 
-                    <div class="mb-3">
+</div>
 
-                        <label class="form-label">
-                            Name
-                        </label>
+<%
+}
+%>
 
-                        <input type="text"
-                               name="name"
-                               class="form-control"
-                               placeholder="Enter Name"
-                               required>
+<!-- REGISTER FORM -->
 
-                    </div>
+<form action="<%=request.getContextPath()%>/register"
+      method="post">
 
-                    <!-- EMAIL -->
+<!-- NAME -->
 
-                    <div class="mb-3">
+<div class="mb-3">
 
-                        <label class="form-label">
-                            Email
-                        </label>
+<label class="form-label fw-semibold">
 
-                        <input type="email"
-                               name="email"
-                               class="form-control"
-                               placeholder="Enter Email"
-                               required>
+    Name
 
-                    </div>
+</label>
 
-                    <!-- PHONE -->
+<input type="text"
+       name="name"
+       class="form-control"
+       placeholder="Enter Full Name"
+       required>
 
-                    <div class="mb-3">
+</div>
 
-                        <label class="form-label">
-                            Phone Number
-                        </label>
+<!-- EMAIL -->
 
-                        <input type="text"
-                               name="phone"
-                               class="form-control"
-                               placeholder="Enter Phone Number"
-                               pattern="[0-9]{10}"
-                               maxlength="10"
-                               required>
+<div class="mb-3">
 
-                    </div>
+<label class="form-label fw-semibold">
 
-                    <!-- PASSWORD -->
+    Email
 
-                    <div class="mb-3">
+</label>
 
-                        <label class="form-label">
-                            Password
-                        </label>
+<input type="email"
+       name="email"
+       class="form-control"
+       placeholder="Enter Email"
+       required>
 
-                        <input type="password"
-                               name="password"
-                               class="form-control"
-                               placeholder="Enter Password"
-                               required>
+</div>
 
-                    </div>
+<!-- PHONE -->
 
-                    <!-- BUTTON -->
+<div class="mb-3">
 
-                    <button type="submit"
-                            class="btn btn-success w-100">
+<label class="form-label fw-semibold">
 
-                        Register
+    Phone Number
 
-                    </button>
+</label>
 
-                </form>
+<input type="text"
+       name="phone"
+       class="form-control"
+       placeholder="Enter 10-digit Phone Number"
+       pattern="[0-9]{10}"
+       maxlength="10"
+       required>
 
-                <p class="mt-3 text-center">
+</div>
 
-                    Already have an account?
+<!-- PASSWORD -->
 
-                    <a href="login.jsp">
-                        Login
-                    </a>
+<div class="mb-4">
 
-                </p>
+<label class="form-label fw-semibold">
 
-            </div>
+    Password
 
-        </div>
+</label>
 
-    </div>
+<input type="password"
+       name="password"
+       class="form-control"
+       placeholder="Enter Password"
+       required>
+
+</div>
+
+<!-- REGISTER BUTTON -->
+
+<button type="submit"
+        class="btn btn-success w-100 py-2">
+
+    Register
+
+</button>
+
+</form>
+
+<!-- LOGIN LINK -->
+
+<p class="mt-4 text-center mb-0">
+
+    Already have an account?
+
+    <a href="login.jsp"
+       class="fw-semibold text-decoration-none">
+
+        Login
+
+    </a>
+
+</p>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 

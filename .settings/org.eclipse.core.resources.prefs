@@ -1,9 +1,11 @@
 eclipse.preferences.version=1
 encoding//src/main/webapp/admin/add_announcement.jsp=UTF-8
+encoding//src/main/webapp/admin/edit_menu.jsp=UTF-8
 encoding//src/main/webapp/admin/manage_users.jsp=UTF-8
 encoding//src/main/webapp/admin/reports.jsp=UTF-8
 encoding//src/main/webapp/admin/view_feedback.jsp=UTF-8
 encoding//src/main/webapp/admin/view_subscription.jsp=UTF-8
+encoding//src/main/webapp/index.jsp=UTF-8
 encoding//src/main/webapp/user/attendance.jsp=UTF-8
 encoding//src/main/webapp/user/skip_day.jsp=UTF-8
 encoding//src/main/webapp/user/view_payment.jsp=UTF-8

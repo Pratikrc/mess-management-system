@@ -1,5 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-pageEncoding="UTF-8"%>
+<%@ page language="java"
+         contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8"%>
 
 <!DOCTYPE html>
 
@@ -8,11 +9,20 @@ pageEncoding="UTF-8"%>
 
 <meta charset="UTF-8">
 
+<meta name="viewport"
+      content="width=device-width, initial-scale=1">
+
 <title>Login - Smart Mess</title>
 
 <!-- Bootstrap CSS -->
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet">
+
+<!-- Custom CSS -->
+
+<link rel="stylesheet"
+      href="css/style.css">
 
 </head>
 
@@ -20,111 +30,132 @@ pageEncoding="UTF-8"%>
 
 <div class="container">
 
-    <div class="row justify-content-center mt-5">
+<div class="row justify-content-center align-items-center min-vh-100">
 
-        <div class="col-md-4">
+<div class="col-xl-4
+            col-lg-5
+            col-md-6
+            col-sm-8
+            col-11">
 
-            <div class="card shadow p-4">
+<div class="card shadow-lg p-4">
 
-                <h3 class="text-center mb-3">
-                    User Login
-                </h3>
+<!-- TITLE -->
 
-                <%
-                String msg = request.getParameter("msg");
+<h3 class="text-center mb-4 fw-bold">
 
-                String type = request.getParameter("type");
+    Smart Mess Login
 
-                if (msg != null) {
-                %>
+</h3>
 
-                <div class="alert
-                    <%= type != null && type.equals("success")
-                        ? "alert-success"
-                        : "alert-danger" %>">
+<!-- ALERT MESSAGE -->
 
-                    <%= msg %>
+<%
+String msg = request.getParameter("msg");
 
-                </div>
+String type = request.getParameter("type");
 
-                <%
-                }
-                %>
+if (msg != null) {
+%>
 
-                <form action="login" method="post">
+<div class="alert
+    <%= type != null && type.equals("success")
+        ? "alert-success"
+        : "alert-danger" %>">
 
-                    <!-- EMAIL -->
+    <%= msg %>
 
-                    <div class="mb-3">
+</div>
 
-                        <label class="form-label">
-                            Email
-                        </label>
+<%
+}
+%>
 
-                        <input type="email"
-                               name="email"
-                               class="form-control"
-                               placeholder="Enter Email"
-                               required>
+<!-- LOGIN FORM -->
 
-                    </div>
+<form action="login"
+      method="post">
 
-                    <!-- PASSWORD -->
+<!-- EMAIL -->
 
-                    <div class="mb-3">
+<div class="mb-3">
 
-                        <label class="form-label">
-                            Password
-                        </label>
+<label class="form-label fw-semibold">
 
-                        <input type="password"
-                               name="password"
-                               class="form-control"
-                               placeholder="Enter Password"
-                               required>
+    Email
 
-                    </div>
+</label>
 
-                    <!-- LOGIN BUTTON -->
+<input type="email"
+       name="email"
+       class="form-control"
+       placeholder="Enter Email"
+       required>
 
-                    <button type="submit"
-                            class="btn btn-primary w-100">
+</div>
 
-                        Login
+<!-- PASSWORD -->
 
-                    </button>
+<div class="mb-3">
 
-                </form>
+<label class="form-label fw-semibold">
 
-                <!-- REGISTER -->
+    Password
 
-                <p class="mt-3 text-center">
+</label>
 
-                    New user?
+<input type="password"
+       name="password"
+       class="form-control"
+       placeholder="Enter Password"
+       required>
 
-                    <a href="register.jsp">
-                        Register
-                    </a>
+</div>
 
-                </p>
+<!-- LOGIN BUTTON -->
 
-                <!-- FORGOT PASSWORD -->
+<button type="submit"
+        class="btn btn-primary w-100 py-2">
 
-                <p class="text-center">
+    Login
 
-                    <a href="forgot_password.jsp">
+</button>
 
-                        Forgot Password?
+</form>
 
-                    </a>
+<!-- REGISTER -->
 
-                </p>
+<p class="mt-4 text-center mb-2">
 
-            </div>
+    New user?
 
-        </div>
+    <a href="register.jsp"
+       class="fw-semibold text-decoration-none">
 
-    </div>
+        Register
+
+    </a>
+
+</p>
+
+<!-- FORGOT PASSWORD -->
+
+<p class="text-center mb-0">
+
+    <a href="forgot_password.jsp"
+       class="text-decoration-none">
+
+        Forgot Password?
+
+    </a>
+
+</p>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 

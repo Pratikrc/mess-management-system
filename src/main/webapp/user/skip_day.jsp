@@ -3,13 +3,17 @@
 
 <%
 if (session.getAttribute("email") == null) {
+
     response.sendRedirect("../login.jsp");
+
     return;
 }
 
 String email = (String) session.getAttribute("email");
 
 String message = "";
+
+String alertType = "info";
 
 try (Connection con = DBConnection.getConnection()) {
 
@@ -28,9 +32,11 @@ try (Connection con = DBConnection.getConnection()) {
 
         message = "Mess is currently closed. Skip option disabled.";
 
+        alertType = "danger";
+
     } else {
 
-        // 🔴 1. CHECK ATTENDANCE ALREADY MARKED TODAY
+        // 🔴 CHECK ATTENDANCE
         PreparedStatement psAttend = con.prepareStatement(
 
             "SELECT * FROM attendance " +
@@ -49,9 +55,11 @@ try (Connection con = DBConnection.getConnection()) {
                     " attendance already marked today. " +
                     "You cannot skip this day!";
 
+            alertType = "warning";
+
         } else {
 
-            // 🔴 2. CHECK SKIP COUNT (MONTHLY LIMIT)
+            // 🔴 CHECK SKIP LIMIT
             PreparedStatement psCount = con.prepareStatement(
 
                 "SELECT COUNT(*) FROM skip_days " +
@@ -71,7 +79,7 @@ try (Connection con = DBConnection.getConnection()) {
                 used = rsCount.getInt(1);
             }
 
-            // 🔴 3. CHECK IF ALREADY SKIPPED TODAY
+            // 🔴 CHECK ALREADY SKIPPED
             PreparedStatement psCheck = con.prepareStatement(
 
                 "SELECT * FROM skip_days " +
@@ -86,13 +94,17 @@ try (Connection con = DBConnection.getConnection()) {
 
                 message = "You already skipped today!";
 
+                alertType = "warning";
+
             } else if (used >= 3) {
 
                 message = "Skip limit reached (3 per month)";
 
+                alertType = "danger";
+
             } else {
 
-                // 🔴 4. INSERT SKIP
+                // 🔴 INSERT SKIP
                 PreparedStatement psInsert = con.prepareStatement(
 
                     "INSERT INTO skip_days(user_email, skip_date) " +
@@ -103,7 +115,7 @@ try (Connection con = DBConnection.getConnection()) {
 
                 psInsert.executeUpdate();
 
-                // 🔴 5. EXTEND SUBSCRIPTION
+                // 🔴 EXTEND SUBSCRIPTION
                 PreparedStatement psUpdate = con.prepareStatement(
 
                     "UPDATE subscription " +
@@ -116,6 +128,8 @@ try (Connection con = DBConnection.getConnection()) {
                 psUpdate.executeUpdate();
 
                 message = "Day skipped successfully & subscription extended!";
+
+                alertType = "success";
             }
         }
     }
@@ -125,6 +139,8 @@ try (Connection con = DBConnection.getConnection()) {
     e.printStackTrace();
 
     message = "Something went wrong!";
+
+    alertType = "danger";
 }
 %>
 
@@ -135,27 +151,110 @@ try (Connection con = DBConnection.getConnection()) {
 
 <meta charset="UTF-8">
 
+<meta name="viewport"
+      content="width=device-width, initial-scale=1">
+
 <title>Skip Day</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap -->
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet">
+
+<!-- Custom CSS -->
+
+<link rel="stylesheet"
+      href="../css/style.css">
 
 </head>
 
-<body class="container mt-4">
+<body class="bg-light">
 
-<h3 class="text-center">Skip Today</h3>
+<!-- 🔥 NAVBAR -->
 
-<div class="alert alert-info text-center">
+<nav class="navbar navbar-dark bg-dark">
+
+<div class="container-fluid">
+
+<span class="navbar-brand">
+
+    Skip Day
+
+</span>
+
+<a href="dashboard.jsp"
+   class="btn btn-light btn-sm">
+
+    Back
+
+</a>
+
+</div>
+
+</nav>
+
+<div class="container py-5">
+
+<div class="row justify-content-center">
+
+<div class="col-lg-6 col-md-8 col-sm-12">
+
+<!-- 🔥 MAIN CARD -->
+
+<div class="card shadow-sm border-0">
+
+<div class="card-body p-4 text-center">
+
+<h3 class="mb-4">
+
+    ⏭️ Skip Today's Meal
+
+</h3>
+
+<!-- 🔔 MESSAGE -->
+
+<div class="alert alert-<%= alertType %> shadow-sm">
 
     <%= message %>
 
 </div>
 
-<div class="text-center">
+<!-- INFO -->
 
-    <a href="dashboard.jsp" class="btn btn-primary">
-        Back to Dashboard
-    </a>
+<div class="card bg-light border-0 p-3 mb-4">
+
+<p class="mb-2">
+
+    ⚠ You can skip only
+    <strong>3 days per month</strong>
+
+</p>
+
+<p class="mb-0">
+
+    📅 Subscription will extend by
+    <strong>1 day</strong>
+
+</p>
+
+</div>
+
+<!-- BUTTON -->
+
+<a href="dashboard.jsp"
+   class="btn btn-primary w-100 py-2">
+
+    Back to Dashboard
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 

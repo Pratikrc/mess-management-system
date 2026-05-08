@@ -9,6 +9,8 @@ String role = (String) session.getAttribute("role");
 if (email == null || role == null || !role.equals("admin")) {
 
     response.sendRedirect("../login.jsp");
+
+    return;
 }
 
 // 📊 VARIABLES
@@ -167,115 +169,179 @@ try {
 
 <meta charset="UTF-8">
 
+<meta name="viewport"
+      content="width=device-width, initial-scale=1">
+
 <title>Reports Dashboard</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap -->
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet">
+
+<!-- Custom CSS -->
+
+<link rel="stylesheet"
+      href="../css/style.css">
+
+<!-- Chart JS -->
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 
-<body>
+<body class="bg-light">
 
 <!-- 🔥 NAVBAR -->
 
 <nav class="navbar navbar-dark bg-dark">
 
-    <div class="container-fluid">
+<div class="container-fluid">
 
-        <span class="navbar-brand">
-            📊 Smart Mess Reports
-        </span>
+<span class="navbar-brand">
 
-        <a href="dashboard.jsp" class="btn btn-light">
-            Back
-        </a>
+    📊 Smart Mess Reports
 
-    </div>
+</span>
+
+<a href="dashboard.jsp"
+   class="btn btn-light btn-sm">
+
+    Back
+
+</a>
+
+</div>
 
 </nav>
 
-<div class="container mt-4">
+<div class="container py-4">
 
 <!-- 📊 SUMMARY CARDS -->
 
 <div class="row">
 
-<div class="col-md-3 mb-3">
+<!-- TOTAL USERS -->
 
-    <div class="card shadow text-center bg-primary text-white">
+<div class="col-lg-3 col-md-6 col-sm-12 mb-3">
 
-        <div class="card-body">
+<div class="card shadow-sm border-0 bg-primary text-white">
 
-            <h5>Total Users</h5>
+<div class="card-body text-center">
 
-            <h2><%= totalUsers %></h2>
+<h5>
 
-        </div>
+    Total Users
 
-    </div>
+</h5>
 
-</div>
+<h2>
 
-<div class="col-md-3 mb-3">
+    <%= totalUsers %>
 
-    <div class="card shadow text-center bg-success text-white">
-
-        <div class="card-body">
-
-            <h5>Active Subscriptions</h5>
-
-            <h2><%= activeSubs %></h2>
-
-        </div>
-
-    </div>
-
-</div>
-
-<div class="col-md-3 mb-3">
-
-    <div class="card shadow text-center bg-warning text-dark">
-
-        <div class="card-body">
-
-            <h5>Total Meals Today</h5>
-
-            <h2><%= totalMealsToday %></h2>
-
-        </div>
-
-    </div>
-
-</div>
-
-<div class="col-md-3 mb-3">
-
-    <div class="card shadow text-center bg-danger text-white">
-
-        <div class="card-body">
-
-            <h5>Total Revenue</h5>
-
-            <h2>₹ <%= totalRevenue %></h2>
-
-        </div>
-
-    </div>
+</h2>
 
 </div>
 
 </div>
 
-<!-- 📋 REPORT TABLE -->
+</div>
 
-<div class="card shadow p-4 mb-4">
+<!-- ACTIVE SUBS -->
 
-<h4 class="mb-3">
+<div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+
+<div class="card shadow-sm border-0 bg-success text-white">
+
+<div class="card-body text-center">
+
+<h5>
+
+    Active Subscriptions
+
+</h5>
+
+<h2>
+
+    <%= activeSubs %>
+
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- MEALS -->
+
+<div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+
+<div class="card shadow-sm border-0 bg-warning text-dark">
+
+<div class="card-body text-center">
+
+<h5>
+
+    Total Meals Today
+
+</h5>
+
+<h2>
+
+    <%= totalMealsToday %>
+
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- REVENUE -->
+
+<div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+
+<div class="card shadow-sm border-0 bg-danger text-white">
+
+<div class="card-body text-center">
+
+<h5>
+
+    Total Revenue
+
+</h5>
+
+<h2>
+
+    ₹ <%= totalRevenue %>
+
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- 📋 ANALYTICS TABLE -->
+
+<div class="card shadow-sm border-0 mb-4">
+
+<div class="card-body">
+
+<h4 class="mb-4 text-center text-md-start">
+
     📋 Daily & Monthly Analytics
+
 </h4>
 
-<table class="table table-bordered table-striped">
+<div class="table-responsive">
+
+<table class="table table-bordered table-striped align-middle">
 
 <thead class="table-dark">
 
@@ -329,45 +395,84 @@ try {
 
 </div>
 
+</div>
+
+</div>
+
 <!-- 📊 CHARTS -->
 
 <div class="row">
 
 <!-- PAYMENT CHART -->
 
-<div class="col-md-6">
+<div class="col-lg-6 col-md-12 mb-4">
 
-    <div class="card shadow p-3 mb-4">
+<div class="card shadow-sm border-0">
 
-        <h5 class="text-center">
-            💳 Payment Report
-        </h5>
+<div class="card-body">
 
-        <canvas id="paymentChart"></canvas>
+<h5 class="text-center mb-4">
 
-    </div>
+    💳 Payment Report
+
+</h5>
+
+<div style="height:300px;">
+
+<canvas id="paymentChart"></canvas>
 
 </div>
-
-<!-- ATTENDANCE CHART -->
-
-<div class="col-md-6">
-
-    <div class="card shadow p-3 mb-4">
-
-        <h5 class="text-center">
-            📊 Attendance Report
-        </h5>
-
-        <canvas id="attendanceChart"></canvas>
-
-    </div>
 
 </div>
 
 </div>
 
 </div>
+
+<!-- ATTENDANCE CHART -->
+
+<div class="col-lg-6 col-md-12 mb-4">
+
+<div class="card shadow-sm border-0">
+
+<div class="card-body">
+
+<h5 class="text-center mb-4">
+
+    📊 Attendance Report
+
+</h5>
+
+<div style="height:300px;">
+
+<canvas id="attendanceChart"></canvas>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- 🔙 BACK BUTTON -->
+
+<div class="text-center mt-3">
+
+<a href="dashboard.jsp"
+   class="btn btn-secondary w-100 w-md-auto px-4">
+
+    Back to Dashboard
+
+</a>
+
+</div>
+
+</div>
+
+<!-- 📊 CHART JS -->
 
 <script>
 
@@ -386,6 +491,13 @@ new Chart(document.getElementById("paymentChart"), {
             data: [<%=paid%>, <%=pending%>]
 
         }]
+    },
+
+    options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false
     }
 });
 
@@ -406,8 +518,16 @@ new Chart(document.getElementById("attendanceChart"), {
             data: [<%=present%>, <%=absent%>]
 
         }]
+    },
+
+    options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false
     }
 });
+
 </script>
 
 </body>
