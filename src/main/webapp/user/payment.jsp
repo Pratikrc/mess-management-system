@@ -386,15 +386,25 @@ if (msg != null) {
 
 <label class="w-100">
 
-<input type="radio"
-       name="plan"
-       value="Weekly"
-       class="d-none"
-       required>
-
-<div class="card h-100 border-0">
+<div class="card h-100 border-0 subscription-card">
 
 <div class="card-body text-center">
+
+<div class="form-check text-start mb-3">
+
+<input class="form-check-input"
+       type="radio"
+       name="plan"
+       value="Weekly"
+       required>
+
+<label class="form-check-label fw-bold">
+
+    Select Weekly Plan
+
+</label>
+
+</div>
 
 <div class="mb-3"
      style="font-size:55px;">
@@ -465,15 +475,25 @@ if (msg != null) {
 
 <label class="w-100">
 
-<input type="radio"
-       name="plan"
-       value="Monthly"
-       class="d-none"
-       required>
-
-<div class="card h-100 border-0">
+<div class="card h-100 border-0 subscription-card">
 
 <div class="card-body text-center">
+
+<div class="form-check text-start mb-3">
+
+<input class="form-check-input"
+       type="radio"
+       name="plan"
+       value="Monthly"
+       required>
+
+<label class="form-check-label fw-bold">
+
+    Select Monthly Plan
+
+</label>
+
+</div>
 
 <div class="mb-3"
      style="font-size:55px;">
@@ -535,9 +555,6 @@ if (msg != null) {
 </label>
 
 </div>
-
-</div>
-
 <!-- START DATE -->
 
 <div class="card border-0 mb-4">
@@ -677,7 +694,7 @@ if (msg != null) {
 
 <p class="text-danger mt-4 mb-0">
 
-    ⚠ Add your name while making payment
+    ⚠ Add your name and E-mail while making payment
 
 </p>
 
