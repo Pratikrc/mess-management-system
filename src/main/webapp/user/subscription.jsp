@@ -23,6 +23,12 @@ String endDate = null;
 
 boolean active = false;
 
+long daysLeft = 0;
+
+String statusText = "Expired";
+
+String statusClass = "danger";
+
 try {
 
     Connection con = DBConnection.getConnection();
@@ -48,9 +54,17 @@ try {
 
         java.sql.Date ed = rs.getDate("end_date");
 
+        long diff = ed.getTime() - System.currentTimeMillis();
+
+        daysLeft = diff / (1000 * 60 * 60 * 24);
+
         if (ed.getTime() >= System.currentTimeMillis()) {
 
             active = true;
+
+            statusText = "Active";
+
+            statusClass = "success";
         }
     }
 
@@ -84,90 +98,403 @@ try {
 
 </head>
 
-<body class="bg-light">
-
-<!-- 🔥 NAVBAR -->
-
-<nav class="navbar navbar-dark bg-dark">
+<body>
 
 <div class="container-fluid">
 
-<span class="navbar-brand">
+<div class="row">
 
-    Subscription
+<!-- ===================================
+     SIDEBAR
+=================================== -->
 
-</span>
+<div class="col-lg-2 col-md-3 bg-dark text-white min-vh-100 p-3">
+
+<h3 class="text-center mb-4">
+
+    Smart Mess
+
+</h3>
+
+<hr class="bg-light">
+
+<div class="d-grid gap-2">
 
 <a href="dashboard.jsp"
-   class="btn btn-light btn-sm">
+   class="btn btn-outline-light text-start">
+            🏠 Dashboard
 
-    Back
+        </a>
 
-</a>
+        <!-- VIEW MENU -->
+
+        <a href="view_menu.jsp"
+          class="btn btn-outline-light text-start">
+
+            🍽️ View Menu
+
+        </a>
+
+        <!-- ATTENDANCE -->
+
+        <a href="attendance.jsp"
+          class="btn btn-outline-light text-start">
+            📋 Attendance
+
+        </a>
+
+        <!-- ATTENDANCE HISTORY -->
+
+        <a href="attendance_history.jsp"
+           class="btn btn-outline-light text-start">
+
+            📊 Attendance History
+
+        </a>
+
+        <!-- SUBSCRIPTION -->
+
+        <a href="subscription.jsp"
+           class="btn btn-outline-light text-start">
+
+            🗓️ Subscription
+
+        </a>
+
+        <!-- PAYMENTS -->
+
+        <a href="view_payment.jsp"
+           class="btn btn-outline-light text-start">
+
+            💳 Payments
+
+        </a>
+
+        <!-- SKIP DAY -->
+
+        <a href="skip_day.jsp"
+          class="btn btn-outline-light text-start">
+
+            ⏭️ Skip Day
+
+        </a>
+
+        <!-- FEEDBACK -->
+
+        <a href="feedback.jsp"
+           class="btn btn-outline-light text-start">
+
+            💬 Feedback
+
+        </a>
+
+        <!-- LOGOUT -->
+
+        <a href="../logout"
+           class="btn btn-danger text-start mt-3">
+
+            🚪 Logout
+
+        </a>
+
+    </div>
 
 </div>
 
-</nav>
+<!-- ===================================
+     MAIN CONTENT
+=================================== -->
 
-<div class="container py-4">
+<div class="col-lg-10 col-md-9 p-4 main-content">
 
-<div class="row justify-content-center">
+<!-- ===================================
+     TOPBAR
+=================================== -->
 
-<div class="col-lg-5 col-md-7 col-sm-12">
+<div class="topbar d-flex justify-content-between align-items-center flex-wrap">
 
-<!-- 🔥 SUBSCRIPTION CARD -->
+<div>
 
-<div class="card shadow-sm border-0">
+<h3 class="mb-1">
 
-<div class="card-body p-4 text-center">
+    📅 Subscription Dashboard
+
+</h3>
+
+<p class="text-muted mb-0">
+
+    Manage your Smart Mess membership
+
+</p>
+
+</div>
+
+<div class="mt-2 mt-md-0">
+
+<span class="badge bg-gradient-primary p-3">
+
+    Membership Portal
+
+</span>
+
+</div>
+
+</div>
+
+<!-- ===================================
+     SUBSCRIPTION OVERVIEW
+=================================== -->
+
+<div class="row mb-4">
+
+<!-- STATUS CARD -->
+
+<div class="col-lg-4 col-md-6 mb-4">
+
+<div class="card dashboard-card bg-gradient-success h-100">
+
+<div class="card-body">
+
+<h5>
+
+    ✅ Status
+
+</h5>
+
+<h2>
+
+    <%= statusText %>
+
+</h2>
+
+<p class="mb-0">
+
+    Current subscription state
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- PLAN CARD -->
+
+<div class="col-lg-4 col-md-6 mb-4">
+
+<div class="card dashboard-card bg-gradient-primary h-100">
+
+<div class="card-body">
+
+<h5>
+
+    📦 Current Plan
+
+</h5>
+
+<h2>
+
+    <%= plan != null ? plan : "None" %>
+
+</h2>
+
+<p class="mb-0">
+
+    Active membership plan
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- DAYS LEFT -->
+
+<div class="col-lg-4 col-md-6 mb-4">
+
+<div class="card dashboard-card bg-gradient-warning h-100">
+
+<div class="card-body">
+
+<h5>
+
+    ⏳ Days Remaining
+
+</h5>
+
+<h2>
+
+    <%= active ? daysLeft : 0 %>
+
+</h2>
+
+<p class="mb-0">
+
+    Remaining subscription validity
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ===================================
+     SUBSCRIPTION DETAILS
+=================================== -->
+
+<div class="row">
+
+<div class="col-lg-8 mb-4">
+
+<div class="card glass-card h-100">
+
+<div class="card-body">
 
 <h3 class="mb-4">
 
-    📅 Your Subscription
+    📋 Subscription Details
 
 </h3>
 
 <% if (plan != null) { %>
 
+<div class="row">
+
 <!-- PLAN -->
 
-<div class="card bg-light border-0 p-3 mb-3">
+<div class="col-md-6 mb-4">
 
-<p class="mb-2">
+<div class="card border-0 bg-light h-100">
 
-    <strong>Plan:</strong>
+<div class="card-body">
+
+<p class="text-muted mb-2">
+
+    Plan Type
+
+</p>
+
+<h4 class="text-primary">
+
     <%= plan %>
 
+</h4>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- STATUS -->
+
+<div class="col-md-6 mb-4">
+
+<div class="card border-0 bg-light h-100">
+
+<div class="card-body">
+
+<p class="text-muted mb-2">
+
+    Subscription Status
+
 </p>
 
-<p class="mb-2">
+<h4 class="text-<%= statusClass %>">
 
-    <strong>Start Date:</strong>
+    <%= statusText %>
+
+</h4>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- START DATE -->
+
+<div class="col-md-6 mb-4">
+
+<div class="card border-0 bg-light h-100">
+
+<div class="card-body">
+
+<p class="text-muted mb-2">
+
+    Start Date
+
+</p>
+
+<h5>
+
     <%= startDate %>
 
+</h5>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- END DATE -->
+
+<div class="col-md-6 mb-4">
+
+<div class="card border-0 bg-light h-100">
+
+<div class="card-body">
+
+<p class="text-muted mb-2">
+
+    Expiry Date
+
 </p>
 
-<p class="mb-2">
+<h5>
 
-    <strong>End Date:</strong>
     <%= endDate %>
 
-</p>
+</h5>
 
-<p class="mb-0">
+</div>
 
-<strong>Status:</strong>
+</div>
 
-<span class="badge
-    <%= active
-        ? "bg-success"
-        : "bg-danger" %>">
+</div>
 
-    <%= active
-        ? "Active"
-        : "Expired" %>
+</div>
 
-</span>
+<!-- PROGRESS -->
+
+<div class="mt-3">
+
+<h5 class="mb-3">
+
+    Membership Progress
+
+</h5>
+
+<div class="progress">
+
+<div class="progress-bar bg-success"
+     style="width:<%= active ? "75" : "10" %>%">
+
+</div>
+
+</div>
+
+<p class="text-muted mt-2 mb-0">
+
+    Your subscription is currently active.
 
 </p>
 
@@ -175,31 +502,87 @@ try {
 
 <% } else { %>
 
-<div class="alert alert-danger">
+<div class="text-center py-5">
 
-    No subscription found
+<div style="font-size:70px;">
+
+    📭
+
+</div>
+
+<h3 class="mt-3 mb-3">
+
+    No Subscription Found
+
+</h3>
+
+<p class="text-muted mb-4">
+
+    Buy a subscription plan to access mess services.
+
+</p>
+
+<a href="payment.jsp"
+   class="btn btn-primary px-5 py-3">
+
+    Buy Subscription
+
+</a>
 
 </div>
 
 <% } %>
 
-<!-- BUTTON -->
+</div>
+
+</div>
+
+</div>
+
+<!-- ===================================
+     QUICK ACTIONS
+=================================== -->
+
+<div class="col-lg-4 mb-4">
+
+<div class="card h-100">
+
+<div class="card-body">
+
+<h3 class="mb-4">
+
+    ⚡ Quick Actions
+
+</h3>
+
+<div class="d-grid gap-3">
 
 <a href="payment.jsp"
-   class="btn btn-warning w-100 py-2">
+   class="btn btn-warning py-3">
 
-    Buy / Renew Plan
+    💳 Buy / Renew Plan
 
 </a>
 
-<!-- BACK BUTTON -->
+<a href="view_payment.jsp"
+   class="btn btn-success py-3">
+
+    💰 Payment History
+
+</a>
 
 <a href="dashboard.jsp"
-   class="btn btn-secondary w-100 py-2 mt-3">
+   class="btn btn-primary py-3">
 
-    Back to Dashboard
+    🏠 Dashboard
 
 </a>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 

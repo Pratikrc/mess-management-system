@@ -15,9 +15,14 @@ String message = "";
 
 String alertType = "info";
 
+String icon = "ℹ️";
+
+String title = "Information";
+
 try (Connection con = DBConnection.getConnection()) {
 
     // 🔴 CHECK MESS CLOSURE
+
     PreparedStatement psClose = con.prepareStatement(
 
         "SELECT * FROM announcement " +
@@ -34,9 +39,14 @@ try (Connection con = DBConnection.getConnection()) {
 
         alertType = "danger";
 
+        icon = "🚫";
+
+        title = "Mess Closed";
+
     } else {
 
         // 🔴 CHECK ATTENDANCE
+
         PreparedStatement psAttend = con.prepareStatement(
 
             "SELECT * FROM attendance " +
@@ -57,9 +67,14 @@ try (Connection con = DBConnection.getConnection()) {
 
             alertType = "warning";
 
+            icon = "";
+
+            title = "Attendance Already Marked";
+
         } else {
 
             // 🔴 CHECK SKIP LIMIT
+
             PreparedStatement psCount = con.prepareStatement(
 
                 "SELECT COUNT(*) FROM skip_days " +
@@ -80,6 +95,7 @@ try (Connection con = DBConnection.getConnection()) {
             }
 
             // 🔴 CHECK ALREADY SKIPPED
+
             PreparedStatement psCheck = con.prepareStatement(
 
                 "SELECT * FROM skip_days " +
@@ -96,15 +112,24 @@ try (Connection con = DBConnection.getConnection()) {
 
                 alertType = "warning";
 
+                icon = "⚠️";
+
+                title = "Already Skipped";
+
             } else if (used >= 3) {
 
                 message = "Skip limit reached (3 per month)";
 
                 alertType = "danger";
 
+                icon = "❌";
+
+                title = "Limit Reached";
+
             } else {
 
                 // 🔴 INSERT SKIP
+
                 PreparedStatement psInsert = con.prepareStatement(
 
                     "INSERT INTO skip_days(user_email, skip_date) " +
@@ -116,6 +141,7 @@ try (Connection con = DBConnection.getConnection()) {
                 psInsert.executeUpdate();
 
                 // 🔴 EXTEND SUBSCRIPTION
+
                 PreparedStatement psUpdate = con.prepareStatement(
 
                     "UPDATE subscription " +
@@ -130,6 +156,10 @@ try (Connection con = DBConnection.getConnection()) {
                 message = "Day skipped successfully & subscription extended!";
 
                 alertType = "success";
+
+                icon = "✅";
+
+                title = "Skip Successful";
             }
         }
     }
@@ -141,6 +171,10 @@ try (Connection con = DBConnection.getConnection()) {
     message = "Something went wrong!";
 
     alertType = "danger";
+
+    icon = "❌";
+
+    title = "Error";
 }
 %>
 
@@ -168,85 +202,314 @@ try (Connection con = DBConnection.getConnection()) {
 
 </head>
 
-<body class="bg-light">
-
-<!-- 🔥 NAVBAR -->
-
-<nav class="navbar navbar-dark bg-dark">
+<body>
 
 <div class="container-fluid">
 
-<span class="navbar-brand">
+<div class="row">
 
-    Skip Day
+<!-- ===================================
+     SIDEBAR
+=================================== -->
 
-</span>
+<div class="col-lg-2 col-md-3 bg-dark text-white min-vh-100 p-3">
 
-<a href="dashboard.jsp"
-   class="btn btn-light btn-sm">
+<h3 class="text-center mb-4">
 
-    Back
-
-</a>
-
-</div>
-
-</nav>
-
-<div class="container py-5">
-
-<div class="row justify-content-center">
-
-<div class="col-lg-6 col-md-8 col-sm-12">
-
-<!-- 🔥 MAIN CARD -->
-
-<div class="card shadow-sm border-0">
-
-<div class="card-body p-4 text-center">
-
-<h3 class="mb-4">
-
-    ⏭️ Skip Today's Meal
+    Smart Mess
 
 </h3>
 
-<!-- 🔔 MESSAGE -->
+<hr class="bg-light">
 
-<div class="alert alert-<%= alertType %> shadow-sm">
+<div class="d-grid gap-2">
+
+<a href="dashboard.jsp"
+   class="btn btn-outline-light text-start">
+             Dashboard
+
+        </a>
+
+        <!-- VIEW MENU -->
+
+        <a href="view_menu.jsp"
+          class="btn btn-outline-light text-start">
+
+             View Menu
+
+        </a>
+
+        <!-- ATTENDANCE -->
+
+        <a href="attendance.jsp"
+          class="btn btn-outline-light text-start">
+             Attendance
+
+        </a>
+
+        <!-- ATTENDANCE HISTORY -->
+
+        <a href="attendance_history.jsp"
+           class="btn btn-outline-light text-start">
+
+             Attendance History
+
+        </a>
+
+        <!-- SUBSCRIPTION -->
+
+        <a href="subscription.jsp"
+           class="btn btn-outline-light text-start">
+
+             Subscription
+
+        </a>
+
+        <!-- PAYMENTS -->
+
+        <a href="view_payment.jsp"
+           class="btn btn-outline-light text-start">
+
+             Payments
+
+        </a>
+
+        <!-- SKIP DAY -->
+
+        <a href="skip_day.jsp"
+          class="btn btn-outline-light text-start">
+
+             Skip Day
+
+        </a>
+
+        <!-- FEEDBACK -->
+
+        <a href="feedback.jsp"
+           class="btn btn-outline-light text-start">
+
+             Feedback
+
+        </a>
+
+        <!-- LOGOUT -->
+
+        <a href="../logout"
+           class="btn btn-danger text-start mt-3">
+
+             Logout
+
+        </a>
+
+    </div>
+
+</div>
+
+<!-- ===================================
+     MAIN CONTENT
+=================================== -->
+
+<div class="col-lg-10 col-md-9 p-4 main-content">
+
+<!-- ===================================
+     TOPBAR
+=================================== -->
+
+<div class="topbar d-flex justify-content-between align-items-center flex-wrap">
+
+<div>
+
+<h3 class="mb-1">
+
+     Skip Day Portal
+
+</h3>
+
+<p class="text-muted mb-0">
+
+    Manage your meal skip requests
+
+</p>
+
+</div>
+
+<div class="mt-2 mt-md-0">
+
+<span class="badge bg-gradient-warning p-3">
+
+    Skip Management
+
+</span>
+
+</div>
+
+</div>
+
+<!-- ===================================
+     MAIN CARD
+=================================== -->
+
+<div class="row justify-content-center">
+
+<div class="col-lg-7 col-md-10">
+
+<div class="card border-0 overflow-hidden">
+
+<!-- HEADER -->
+
+<div class="bg-gradient-warning text-dark p-4">
+
+<div class="d-flex justify-content-between align-items-center">
+
+<div>
+
+<h3 class="mb-1">
+
+    <%= icon %>
+    <%= title %>
+
+</h3>
+
+<p class="mb-0 opacity-75">
+
+    Smart Mess Skip Day System
+
+</p>
+
+</div>
+
+<div style="font-size:55px; opacity:0.2;">
+
+    
+
+</div>
+
+</div>
+
+</div>
+
+<!-- BODY -->
+
+<div class="card-body p-5 text-center">
+
+<!-- ICON -->
+
+<div style="font-size:80px;"
+     class="mb-4">
+
+    <%= icon %>
+
+</div>
+
+<!-- ALERT -->
+
+<div class="alert alert-<%= alertType %> shadow-soft mb-4 fs-5">
 
     <%= message %>
 
 </div>
 
-<!-- INFO -->
+<!-- INFO CARDS -->
 
-<div class="card bg-light border-0 p-3 mb-4">
+<div class="row mb-4">
 
-<p class="mb-2">
+<!-- LIMIT -->
 
-    ⚠ You can skip only
-    <strong>3 days per month</strong>
+<div class="col-md-6 mb-3">
 
-</p>
+<div class="card border-0 bg-light h-100">
 
-<p class="mb-0">
+<div class="card-body">
 
-    📅 Subscription will extend by
-    <strong>1 day</strong>
+<div style="font-size:40px;">
+
+    
+
+</div>
+
+<h5 class="mt-3">
+
+    Monthly Limit
+
+</h5>
+
+<p class="text-muted mb-0">
+
+    Maximum 3 skips per month
 
 </p>
 
 </div>
 
-<!-- BUTTON -->
+</div>
 
-<a href="dashboard.jsp"
-   class="btn btn-primary w-100 py-2">
+</div>
 
-    Back to Dashboard
+<!-- BENEFIT -->
+
+<div class="col-md-6 mb-3">
+
+<div class="card border-0 bg-light h-100">
+
+<div class="card-body">
+
+<div style="font-size:40px;">
+
+    
+
+</div>
+
+<h5 class="mt-3">
+
+    Subscription Benefit
+
+</h5>
+
+<p class="text-muted mb-0">
+
+    Subscription extends by 1 day
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ACTIONS -->
+
+<div class="row">
+
+<div class="col-md-6 mb-3 mb-md-0">
+
+<a href="attendance.jsp"
+   class="btn btn-dark w-100 py-3">
+
+     Attendance
 
 </a>
+
+</div>
+
+<div class="col-md-6">
+
+<a href="dashboard.jsp"
+   class="btn btn-primary w-100 py-3">
+
+     Dashboard
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 

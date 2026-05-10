@@ -197,7 +197,7 @@ if ("added".equals(successParam)) {
 
 <span class="navbar-brand">
 
-    📢 Manage Announcements
+     Manage Announcements
 
 </span>
 
@@ -250,7 +250,7 @@ if ("added".equals(successParam)) {
 
 <h4 class="mb-4 text-center">
 
-    ➕ Post Announcement
+     Post Announcement
 
 </h4>
 
@@ -362,7 +362,7 @@ if ("added".equals(successParam)) {
 
 <h4 class="mb-4 text-center text-md-start">
 
-    📋 All Announcements
+     All Announcements
 
 </h4>
 

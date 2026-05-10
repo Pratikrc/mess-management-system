@@ -10,6 +10,74 @@ if (session.getAttribute("email") == null) {
 }
 
 String email = (String) session.getAttribute("email");
+
+double totalPaid = 0;
+
+int totalTransactions = 0;
+
+int successfulPayments = 0;
+
+try {
+
+    Connection con = DBConnection.getConnection();
+
+    // 🔥 TOTAL PAID
+
+    PreparedStatement psTotal = con.prepareStatement(
+
+        "SELECT SUM(amount) FROM payments " +
+        "WHERE user_email=? " +
+        "AND status='Paid'"
+    );
+
+    psTotal.setString(1, email);
+
+    ResultSet rsTotal = psTotal.executeQuery();
+
+    if (rsTotal.next()) {
+
+        totalPaid = rsTotal.getDouble(1);
+    }
+
+    // 🔥 TOTAL TRANSACTIONS
+
+    PreparedStatement psCount = con.prepareStatement(
+
+        "SELECT COUNT(*) FROM payments " +
+        "WHERE user_email=?"
+    );
+
+    psCount.setString(1, email);
+
+    ResultSet rsCount = psCount.executeQuery();
+
+    if (rsCount.next()) {
+
+        totalTransactions = rsCount.getInt(1);
+    }
+
+    // 🔥 SUCCESSFUL PAYMENTS
+
+    PreparedStatement psSuccess = con.prepareStatement(
+
+        "SELECT COUNT(*) FROM payments " +
+        "WHERE user_email=? " +
+        "AND status='Paid'"
+    );
+
+    psSuccess.setString(1, email);
+
+    ResultSet rsSuccess = psSuccess.executeQuery();
+
+    if (rsSuccess.next()) {
+
+        successfulPayments = rsSuccess.getInt(1);
+    }
+
+} catch (Exception e) {
+
+    e.printStackTrace();
+}
 %>
 
 <!DOCTYPE html>
@@ -32,58 +100,296 @@ String email = (String) session.getAttribute("email");
 
 </head>
 
-<body class="bg-light">
+<body>
 
-<!-- 🔥 NAVBAR -->
+<div class="container-fluid">
 
-<nav class="navbar navbar-dark bg-dark">
+<div class="row">
 
-    <div class="container-fluid">
+<!-- ===================================
+     SIDEBAR
+=================================== -->
 
-        <span class="navbar-brand">
-            Your Payments
-        </span>
+<div class="col-lg-2 col-md-3 bg-dark text-white min-vh-100 p-3">
 
-        <a href="dashboard.jsp"
-           class="btn btn-light btn-sm">
+<h3 class="text-center mb-4">
 
-            Back
+    Smart Mess
+
+</h3>
+
+<hr class="bg-light">
+
+<div class="d-grid gap-2">
+
+<a href="dashboard.jsp"
+   class="btn btn-outline-light text-start">
+             Dashboard
+
+        </a>
+
+        <!-- VIEW MENU -->
+
+        <a href="view_menu.jsp"
+          class="btn btn-outline-light text-start">
+
+             View Menu
+
+        </a>
+
+        <!-- ATTENDANCE -->
+
+        <a href="attendance.jsp"
+          class="btn btn-outline-light text-start">
+             Attendance
+
+        </a>
+
+        <!-- ATTENDANCE HISTORY -->
+
+        <a href="attendance_history.jsp"
+           class="btn btn-outline-light text-start">
+
+             Attendance History
+
+        </a>
+
+        <!-- SUBSCRIPTION -->
+
+        <a href="subscription.jsp"
+           class="btn btn-outline-light text-start">
+
+             Subscription
+
+        </a>
+
+        <!-- PAYMENTS -->
+
+        <a href="view_payment.jsp"
+           class="btn btn-outline-light text-start">
+
+             Payments
+
+        </a>
+
+        <!-- SKIP DAY -->
+
+        <a href="skip_day.jsp"
+          class="btn btn-outline-light text-start">
+
+             Skip Day
+
+        </a>
+
+        <!-- FEEDBACK -->
+
+        <a href="feedback.jsp"
+           class="btn btn-outline-light text-start">
+
+             Feedback
+
+        </a>
+
+        <!-- LOGOUT -->
+
+        <a href="../logout"
+           class="btn btn-danger text-start mt-3">
+
+             Logout
 
         </a>
 
     </div>
 
-</nav>
+</div>
 
-<div class="container py-4">
+<!-- ===================================
+     MAIN CONTENT
+=================================== -->
 
-<!-- 🔥 PAGE TITLE -->
+<div class="col-lg-10 col-md-9 p-4 main-content">
 
-<h3 class="text-center mb-4">
+<!-- ===================================
+     TOPBAR
+=================================== -->
 
-    💳 Payment History
+<div class="topbar d-flex justify-content-between align-items-center flex-wrap">
+
+<div>
+
+<h3 class="mb-1">
+
+     Payment History
 
 </h3>
 
-<!-- 🔥 PAYMENT CARD -->
+<p class="text-muted mb-0">
 
-<div class="card shadow-sm border-0">
+    Track all your subscription payments
+
+</p>
+
+</div>
+
+<div class="mt-2 mt-md-0">
+
+<span class="badge bg-gradient-success p-3">
+
+    Secure Transactions
+
+</span>
+
+</div>
+
+</div>
+
+<!-- ===================================
+     ANALYTICS CARDS
+=================================== -->
+
+<div class="row mb-4">
+
+<!-- TOTAL PAID -->
+
+<div class="col-lg-4 col-md-6 mb-4">
+
+<div class="card dashboard-card bg-gradient-success h-100">
 
 <div class="card-body">
 
+<h5>
+
+    Total Paid
+
+</h5>
+
+<h2>
+
+     <%= totalPaid %>
+
+</h2>
+
+<p class="mb-0">
+
+    Total successful payments
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- TRANSACTIONS -->
+
+<div class="col-lg-4 col-md-6 mb-4">
+
+<div class="card dashboard-card bg-gradient-primary h-100">
+
+<div class="card-body">
+
+<h5>
+
+    Transactions
+
+</h5>
+
+<h2>
+
+    <%= totalTransactions %>
+
+</h2>
+
+<p class="mb-0">
+
+    Total payment attempts
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- SUCCESS RATE -->
+
+<div class="col-lg-4 col-md-6 mb-4">
+
+<div class="card dashboard-card bg-gradient-warning h-100">
+
+<div class="card-body">
+
+<h5>
+
+     Successful
+
+</h5>
+
+<h2>
+
+    <%= successfulPayments %>
+
+</h2>
+
+<p class="mb-0">
+
+    Approved payments
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ===================================
+     PAYMENT TABLE
+=================================== -->
+
+<div class="card border-0">
+
+<div class="card-body">
+
+<div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+
+<div>
+
+<h4 class="mb-1">
+
+     Transaction Records
+
+</h4>
+
+<p class="text-muted mb-0">
+
+    Complete payment history
+
+</p>
+
+</div>
+
+</div>
+
 <div class="table-responsive">
 
-<table class="table table-bordered table-striped table-hover align-middle text-center">
+<table class="table table-hover align-middle">
 
-<thead class="table-dark">
+<thead>
 
 <tr>
 
-    <th>Amount</th>
+<th>#</th>
 
-    <th>Status</th>
+<th>Amount</th>
 
-    <th>Date</th>
+<th>Status</th>
+
+<th>Date</th>
 
 </tr>
 
@@ -109,6 +415,8 @@ try {
 
     boolean hasData = false;
 
+    int count = 1;
+
     while (rs.next()) {
 
         hasData = true;
@@ -118,36 +426,48 @@ try {
 
 <tr>
 
-    <!-- AMOUNT -->
+<!-- NUMBER -->
 
-    <td class="fw-bold text-success">
+<td class="fw-semibold">
 
-        ₹ <%= rs.getString("amount") %>
+    <%= count++ %>
 
-    </td>
+</td>
 
-    <!-- STATUS -->
+<!-- AMOUNT -->
 
-    <td>
+<td>
 
-        <span class="badge
-            <%= "Paid".equalsIgnoreCase(status)
-                ? "bg-success"
-                : "bg-warning text-dark" %>">
+<h6 class="text-success fw-bold mb-0">
 
-            <%= status %>
+     <%= rs.getString("amount") %>
 
-        </span>
+</h6>
 
-    </td>
+</td>
 
-    <!-- DATE -->
+<!-- STATUS -->
 
-    <td>
+<td>
 
-        <%= rs.getString("payment_date") %>
+<span class="badge
+    <%= "Paid".equalsIgnoreCase(status)
+        ? "bg-success"
+        : "bg-warning text-dark" %>">
 
-    </td>
+    <%= status %>
+
+</span>
+
+</td>
+
+<!-- DATE -->
+
+<td>
+
+    <%= rs.getString("payment_date") %>
+
+</td>
 
 </tr>
 
@@ -159,12 +479,35 @@ try {
 
 <tr>
 
-    <td colspan="3"
-        class="text-center text-danger py-4">
+<td colspan="4"
+    class="text-center py-5">
 
-        No payment records found
+<div style="font-size:60px;">
 
-    </td>
+    
+
+</div>
+
+<h4 class="mt-3">
+
+    No Payment Records Found
+
+</h4>
+
+<p class="text-muted">
+
+    You have not made any payments yet.
+
+</p>
+
+<a href="payment.jsp"
+   class="btn btn-primary mt-3 px-4">
+
+    Make Payment
+
+</a>
+
+</td>
 
 </tr>
 
@@ -187,16 +530,56 @@ try {
 
 </div>
 
-<!-- 🔙 BACK BUTTON -->
+<!-- ===================================
+     QUICK ACTIONS
+=================================== -->
 
-<div class="text-center mt-4">
+<div class="card mt-4">
 
-<a href="dashboard.jsp"
-   class="btn btn-secondary w-100 w-md-auto px-4">
+<div class="card-body">
 
-    Back to Dashboard
+<div class="row text-center">
+
+<div class="col-md-4 mb-3 mb-md-0">
+
+<a href="payment.jsp"
+   class="btn btn-success w-100 py-3">
+
+     New Payment
 
 </a>
+
+</div>
+
+<div class="col-md-4 mb-3 mb-md-0">
+
+<a href="subscription.jsp"
+   class="btn btn-dark w-100 py-3">
+
+     Subscription
+
+</a>
+
+</div>
+
+<div class="col-md-4">
+
+<a href="dashboard.jsp"
+   class="btn btn-primary w-100 py-3">
+
+     Dashboard
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 

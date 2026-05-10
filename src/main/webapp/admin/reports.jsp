@@ -174,182 +174,287 @@ try {
 
 <title>Reports Dashboard</title>
 
-<!-- Bootstrap -->
-
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet">
 
-<!-- Custom CSS -->
-
 <link rel="stylesheet"
       href="../css/style.css">
-
-<!-- Chart JS -->
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 
-<body class="bg-light">
-
-<!-- 🔥 NAVBAR -->
-
-<nav class="navbar navbar-dark bg-dark">
+<body>
 
 <div class="container-fluid">
 
-<span class="navbar-brand">
+<div class="row">
 
-    📊 Smart Mess Reports
+<!-- ===================================
+     SIDEBAR
+=================================== -->
 
-</span>
+<div class="col-lg-2 col-md-3 bg-dark text-white min-vh-100 p-3">
+
+<h3 class="text-center mb-4">
+
+    Smart Mess
+
+</h3>
+
+<hr class="bg-light">
+
+<div class="d-grid gap-2">
 
 <a href="dashboard.jsp"
-   class="btn btn-light btn-sm">
+   class="btn btn-outline-light text-start">
 
-    Back
+     Dashboard
+
+</a>
+
+<a href="manage_users.jsp"
+   class="btn btn-outline-light text-start">
+
+     Manage Users
+
+</a>
+
+<a href="add_menu.jsp"
+   class="btn btn-outline-light text-start">
+
+     Manage Menu
+
+</a>
+
+<a href="add_announcement.jsp"
+   class="btn btn-outline-light text-start">
+
+     Announcement
+
+</a>
+
+<a href="view_attendance.jsp"
+   class="btn btn-outline-light text-start">
+
+     Attendance
+
+</a>
+
+<a href="meal_verification.jsp"
+   class="btn btn-outline-light text-start">
+
+     Meal Verification
+
+</a>
+
+<a href="view_payments.jsp"
+   class="btn btn-outline-light text-start">
+
+     Payments
+
+</a>
+
+<a href="view_subscription.jsp"
+   class="btn btn-outline-light text-start">
+
+     Subscriptions
+
+</a>
+
+<a href="view_feedback.jsp"
+   class="btn btn-outline-light text-start">
+
+     Feedback
+
+</a>
+
+<a href="reports.jsp"
+   class="btn btn-outline-light text-start">
+
+     Reports
+
+</a>
+
+<a href="../logout"
+   class="btn btn-danger text-start mt-3">
+
+     Logout
 
 </a>
 
 </div>
 
-</nav>
+</div>
 
-<div class="container py-4">
+<!-- ===================================
+     MAIN CONTENT
+=================================== -->
 
-<!-- 📊 SUMMARY CARDS -->
+<div class="col-lg-10 col-md-9 p-4">
+<!-- TOPBAR -->
 
-<div class="row">
+<div class="topbar d-flex justify-content-between align-items-center flex-wrap">
 
-<!-- TOTAL USERS -->
+<div>
 
-<div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+<h3 class="mb-1">
 
-<div class="card shadow-sm border-0 bg-primary text-white">
+     Analytics Dashboard
 
-<div class="card-body text-center">
+</h3>
 
-<h5>
+<p class="text-muted mb-0">
 
-    Total Users
+    Smart Mess business insights and reports
 
-</h5>
+</p>
 
-<h2>
+</div>
 
-    <%= totalUsers %>
+<div class="mt-2 mt-md-0">
 
-</h2>
+<span class="badge bg-gradient-primary p-3">
+
+    Executive Analytics
+
+</span>
 
 </div>
 
 </div>
 
-</div>
+<!-- ANALYTICS CARDS -->
 
-<!-- ACTIVE SUBS -->
+<div class="row mb-4">
 
-<div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+<div class="col-lg-3 col-md-6 mb-4">
 
-<div class="card shadow-sm border-0 bg-success text-white">
-
-<div class="card-body text-center">
-
-<h5>
-
-    Active Subscriptions
-
-</h5>
-
-<h2>
-
-    <%= activeSubs %>
-
-</h2>
-
-</div>
-
-</div>
-
-</div>
-
-<!-- MEALS -->
-
-<div class="col-lg-3 col-md-6 col-sm-12 mb-3">
-
-<div class="card shadow-sm border-0 bg-warning text-dark">
-
-<div class="card-body text-center">
-
-<h5>
-
-    Total Meals Today
-
-</h5>
-
-<h2>
-
-    <%= totalMealsToday %>
-
-</h2>
-
-</div>
-
-</div>
-
-</div>
-
-<!-- REVENUE -->
-
-<div class="col-lg-3 col-md-6 col-sm-12 mb-3">
-
-<div class="card shadow-sm border-0 bg-danger text-white">
-
-<div class="card-body text-center">
-
-<h5>
-
-    Total Revenue
-
-</h5>
-
-<h2>
-
-    ₹ <%= totalRevenue %>
-
-</h2>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<!-- 📋 ANALYTICS TABLE -->
-
-<div class="card shadow-sm border-0 mb-4">
+<div class="card dashboard-card bg-gradient-primary h-100">
 
 <div class="card-body">
 
-<h4 class="mb-4 text-center text-md-start">
+<h5> Users</h5>
 
-    📋 Daily & Monthly Analytics
+<h2><%= totalUsers %></h2>
+
+<p class="mb-0">
+
+    Registered students
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-3 col-md-6 mb-4">
+
+<div class="card dashboard-card bg-gradient-success h-100">
+
+<div class="card-body">
+
+<h5> Active Plans</h5>
+
+<h2><%= activeSubs %></h2>
+
+<p class="mb-0">
+
+    Active subscriptions
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-3 col-md-6 mb-4">
+
+<div class="card dashboard-card bg-gradient-warning h-100">
+
+<div class="card-body">
+
+<h5> Meals Today</h5>
+
+<h2><%= totalMealsToday %></h2>
+
+<p class="mb-0">
+
+    Total meals served
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-3 col-md-6 mb-4">
+
+<div class="card dashboard-card bg-gradient-danger h-100">
+
+<div class="card-body">
+
+<h5> Revenue</h5>
+
+<h2> <%= totalRevenue %></h2>
+
+<p class="mb-0">
+
+    Total earnings
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- DAILY ANALYTICS -->
+
+<div class="card border-0 mb-4">
+
+<div class="card-body">
+
+<div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+
+<div>
+
+<h4 class="mb-1">
+
+     Analytics Summary
 
 </h4>
 
+<p class="text-muted mb-0">
+
+    Daily and monthly system statistics
+
+</p>
+
+</div>
+
+</div>
+
 <div class="table-responsive">
 
-<table class="table table-bordered table-striped align-middle">
+<table class="table table-hover align-middle">
 
-<thead class="table-dark">
+<thead>
 
 <tr>
 
-    <th>Report Type</th>
+<th>Report Type</th>
 
-    <th>Value</th>
+<th>Value</th>
 
 </tr>
 
@@ -359,33 +464,37 @@ try {
 
 <tr>
 
-    <td>🍛 Lunch Attendance Today</td>
+<td> Lunch Attendance Today</td>
 
-    <td><%= lunchToday %></td>
-
-</tr>
-
-<tr>
-
-    <td>🍽️ Dinner Attendance Today</td>
-
-    <td><%= dinnerToday %></td>
+<td class="fw-bold"><%= lunchToday %></td>
 
 </tr>
 
 <tr>
 
-    <td>📅 Monthly Attendance</td>
+<td> Dinner Attendance Today</td>
 
-    <td><%= monthlyAttendance %></td>
+<td class="fw-bold"><%= dinnerToday %></td>
 
 </tr>
 
 <tr>
 
-    <td>💰 Total Revenue</td>
+<td> Monthly Attendance</td>
 
-    <td>₹ <%= totalRevenue %></td>
+<td class="fw-bold"><%= monthlyAttendance %></td>
+
+</tr>
+
+<tr>
+
+<td> Total Revenue</td>
+
+<td class="fw-bold text-success">
+
+     <%= totalRevenue %>
+
+</td>
 
 </tr>
 
@@ -399,25 +508,25 @@ try {
 
 </div>
 
-<!-- 📊 CHARTS -->
+<!-- CHARTS -->
 
 <div class="row">
 
-<!-- PAYMENT CHART -->
+<!-- PAYMENT -->
 
-<div class="col-lg-6 col-md-12 mb-4">
+<div class="col-lg-6 mb-4">
 
-<div class="card shadow-sm border-0">
+<div class="card border-0 h-100">
 
 <div class="card-body">
 
-<h5 class="text-center mb-4">
+<h4 class="mb-4 text-center">
 
-    💳 Payment Report
+     Payment Analytics
 
-</h5>
+</h4>
 
-<div style="height:300px;">
+<div style="height:350px;">
 
 <canvas id="paymentChart"></canvas>
 
@@ -429,21 +538,21 @@ try {
 
 </div>
 
-<!-- ATTENDANCE CHART -->
+<!-- ATTENDANCE -->
 
-<div class="col-lg-6 col-md-12 mb-4">
+<div class="col-lg-6 mb-4">
 
-<div class="card shadow-sm border-0">
+<div class="card border-0 h-100">
 
 <div class="card-body">
 
-<h5 class="text-center mb-4">
+<h4 class="mb-4 text-center">
 
-    📊 Attendance Report
+     Attendance Analytics
 
-</h5>
+</h4>
 
-<div style="height:300px;">
+<div style="height:350px;">
 
 <canvas id="attendanceChart"></canvas>
 
@@ -457,14 +566,42 @@ try {
 
 </div>
 
-<!-- 🔙 BACK BUTTON -->
+<!-- QUICK ACTIONS -->
 
-<div class="text-center mt-3">
+<div class="card border-0">
+
+<div class="card-body">
+
+<div class="row text-center">
+
+<div class="col-md-4 mb-3 mb-md-0">
 
 <a href="dashboard.jsp"
-   class="btn btn-secondary w-100 w-md-auto px-4">
+   class="btn btn-primary w-100 py-3">
 
-    Back to Dashboard
+     Dashboard
+
+</a>
+
+</div>
+
+<div class="col-md-4 mb-3 mb-md-0">
+
+<a href="view_payments.jsp"
+   class="btn btn-success w-100 py-3">
+
+     Payments
+
+</a>
+
+</div>
+
+<div class="col-md-4">
+
+<a href="manage_users.jsp"
+   class="btn btn-dark w-100 py-3">
+
+     Users
 
 </a>
 
@@ -472,15 +609,25 @@ try {
 
 </div>
 
-<!-- 📊 CHART JS -->
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- CHARTS -->
 
 <script>
 
-// 💳 PAYMENT CHART
+// PAYMENT CHART
 
 new Chart(document.getElementById("paymentChart"), {
 
-    type: 'pie',
+    type: 'doughnut',
 
     data: {
 
@@ -501,7 +648,7 @@ new Chart(document.getElementById("paymentChart"), {
     }
 });
 
-// 📊 ATTENDANCE CHART
+// ATTENDANCE CHART
 
 new Chart(document.getElementById("attendanceChart"), {
 

@@ -10,6 +10,48 @@ if (role == null || !role.equals("admin")) {
 
     return;
 }
+
+int totalFeedback = 0;
+
+int todayFeedback = 0;
+
+try {
+
+    Connection con = DBConnection.getConnection();
+
+    // TOTAL FEEDBACK
+
+    PreparedStatement ps1 = con.prepareStatement(
+
+        "SELECT COUNT(*) FROM feedback"
+    );
+
+    ResultSet rs1 = ps1.executeQuery();
+
+    if (rs1.next()) {
+
+        totalFeedback = rs1.getInt(1);
+    }
+
+    // TODAY FEEDBACK
+
+    PreparedStatement ps2 = con.prepareStatement(
+
+        "SELECT COUNT(*) FROM feedback " +
+        "WHERE DATE(created_at)=CURDATE()"
+    );
+
+    ResultSet rs2 = ps2.executeQuery();
+
+    if (rs2.next()) {
+
+        todayFeedback = rs2.getInt(1);
+    }
+
+} catch (Exception e) {
+
+    e.printStackTrace();
+}
 %>
 
 <!DOCTYPE html>
@@ -32,66 +74,249 @@ if (role == null || !role.equals("admin")) {
 
 </head>
 
-<body class="bg-light">
-
-<!-- 🔥 NAVBAR -->
-
-<nav class="navbar navbar-dark bg-dark">
+<body>
 
 <div class="container-fluid">
 
-<span class="navbar-brand">
+<div class="row">
 
-    User Feedback
+<!-- ===================================
+     SIDEBAR
+=================================== -->
 
-</span>
+<div class="col-lg-2 col-md-3 bg-dark text-white min-vh-100 p-3">
+
+<h3 class="text-center mb-4">
+
+    Smart Mess
+
+</h3>
+
+<hr class="bg-light">
+
+<div class="d-grid gap-2">
 
 <a href="dashboard.jsp"
-   class="btn btn-light btn-sm">
+   class="btn btn-outline-light text-start">
 
-    Back
+     Dashboard
+
+</a>
+
+<a href="manage_users.jsp"
+   class="btn btn-outline-light text-start">
+
+     Manage Users
+
+</a>
+
+<a href="add_menu.jsp"
+   class="btn btn-outline-light text-start">
+
+     Manage Menu
+
+</a>
+
+<a href="add_announcement.jsp"
+   class="btn btn-outline-light text-start">
+
+     Announcement
+
+</a>
+
+<a href="view_attendance.jsp"
+   class="btn btn-outline-light text-start">
+
+     Attendance
+
+</a>
+
+<a href="meal_verification.jsp"
+   class="btn btn-outline-light text-start">
+
+     Meal Verification
+
+</a>
+
+<a href="view_payments.jsp"
+   class="btn btn-outline-light text-start">
+
+     Payments
+
+</a>
+
+<a href="view_subscription.jsp"
+   class="btn btn-outline-light text-start">
+
+     Subscriptions
+
+</a>
+
+<a href="view_feedback.jsp"
+   class="btn btn-outline-light text-start">
+
+     Feedback
+
+</a>
+
+<a href="reports.jsp"
+   class="btn btn-outline-light text-start">
+
+     Reports
+
+</a>
+
+<a href="../logout"
+   class="btn btn-danger text-start mt-3">
+
+     Logout
 
 </a>
 
 </div>
 
-</nav>
+</div>
 
-<div class="container py-4">
+<!-- ===================================
+     MAIN CONTENT
+=================================== -->
 
-<!-- 🔥 PAGE TITLE -->
+<div class="col-lg-10 col-md-9 p-4">
+<!-- ===================================
+     TOPBAR
+=================================== -->
 
-<h3 class="mb-4 text-center text-md-start">
+<div class="topbar d-flex justify-content-between align-items-center flex-wrap">
 
-    💬 User Feedback
+<div>
+
+<h3 class="mb-1">
+
+     Feedback Center
 
 </h3>
 
-<!-- 📋 FEEDBACK TABLE -->
+<p class="text-muted mb-0">
 
-<div class="card shadow-sm border-0">
+    Review and manage user feedback
+
+</p>
+
+</div>
+
+<div class="mt-2 mt-md-0">
+
+<span class="badge bg-gradient-primary p-3">
+
+    Support Dashboard
+
+</span>
+
+</div>
+
+</div>
+
+<!-- ===================================
+     ANALYTICS CARDS
+=================================== -->
+
+<div class="row mb-4">
+
+<!-- TOTAL FEEDBACK -->
+
+<div class="col-lg-6 col-md-6 mb-4">
+
+<div class="card dashboard-card bg-gradient-primary h-100">
 
 <div class="card-body">
 
-<div class="table-responsive">
+<h5>
 
-<table class="table table-bordered table-striped table-hover align-middle">
+     Total Feedback
 
-<thead class="table-dark">
+</h5>
 
-<tr>
+<h2>
 
-    <th>User</th>
+    <%= totalFeedback %>
 
-    <th>Message</th>
+</h2>
 
-    <th>Date</th>
+<p class="mb-0">
 
-</tr>
+    Total submitted feedback
 
-</thead>
+</p>
 
-<tbody>
+</div>
+
+</div>
+
+</div>
+
+<!-- TODAY FEEDBACK -->
+
+<div class="col-lg-6 col-md-6 mb-4">
+
+<div class="card dashboard-card bg-gradient-success h-100">
+
+<div class="card-body">
+
+<h5>
+
+     Today's Feedback
+
+</h5>
+
+<h2>
+
+    <%= todayFeedback %>
+
+</h2>
+
+<p class="mb-0">
+
+    Feedback received today
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ===================================
+     FEEDBACK LIST
+=================================== -->
+
+<div class="card border-0">
+
+<div class="card-body">
+
+<div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+
+<div>
+
+<h4 class="mb-1">
+
+     User Feedback Messages
+
+</h4>
+
+<p class="text-muted mb-0">
+
+    Recent user suggestions and reports
+
+</p>
+
+</div>
+
+</div>
+
+<div class="row">
 
 <%
 try {
@@ -108,38 +333,102 @@ try {
 
     boolean hasData = false;
 
+    int count = 1;
+
     while (rs.next()) {
 
         hasData = true;
 %>
 
-<tr>
+<!-- ===================================
+     FEEDBACK CARD
+=================================== -->
 
-<!-- USER -->
+<div class="col-lg-6 mb-4">
 
-<td class="fw-semibold text-primary">
+<div class="card border shadow-sm h-100">
 
-    Anonymous
+<div class="card-body">
 
-</td>
+<!-- HEADER -->
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+
+<div class="d-flex align-items-center">
+
+<div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3"
+     style="width:50px; height:50px; font-weight:600;">
+
+    <%= count++ %>
+
+</div>
+
+<div>
+
+<h6 class="mb-0 fw-semibold">
+
+    Anonymous User
+
+</h6>
+
+<small class="text-muted">
+
+    Smart Mess Feedback
+
+</small>
+
+</div>
+
+</div>
+
+<span class="badge bg-gradient-primary">
+
+    Feedback
+
+</span>
+
+</div>
 
 <!-- MESSAGE -->
 
-<td style="min-width:250px;">
+<div class="card bg-light border-0">
+
+<div class="card-body">
+
+<p class="mb-0 text-muted"
+   style="line-height:1.8;">
 
     <%= rs.getString("message") %>
 
-</td>
+</p>
 
-<!-- DATE -->
+</div>
 
-<td>
+</div>
 
-    <%= rs.getString("created_at") %>
+<!-- FOOTER -->
 
-</td>
+<div class="d-flex justify-content-between align-items-center mt-3">
 
-</tr>
+<small class="text-muted">
+
+     <%= rs.getString("created_at") %>
+
+</small>
+
+<span class="text-success fw-semibold">
+
+     Received
+
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
 
 <%
     }
@@ -147,16 +436,31 @@ try {
     if (!hasData) {
 %>
 
-<tr>
+<div class="col-12">
 
-<td colspan="3"
-    class="text-center text-danger py-4">
+<div class="text-center py-5">
 
-    No feedback found
+<div style="font-size:70px;">
 
-</td>
+    
 
-</tr>
+</div>
+
+<h3 class="mt-3">
+
+    No Feedback Found
+
+</h3>
+
+<p class="text-muted">
+
+    No user feedback has been submitted yet.
+
+</p>
+
+</div>
+
+</div>
 
 <%
     }
@@ -167,26 +471,62 @@ try {
 }
 %>
 
-</tbody>
-
-</table>
-
 </div>
 
 </div>
 
 </div>
 
-<!-- 🔙 BACK BUTTON -->
+<!-- ===================================
+     QUICK ACTIONS
+=================================== -->
 
-<div class="text-center mt-4">
+<div class="card mt-4">
+
+<div class="card-body">
+
+<div class="row text-center">
+
+<div class="col-md-4 mb-3 mb-md-0">
 
 <a href="dashboard.jsp"
-   class="btn btn-secondary w-100 w-md-auto px-4">
+   class="btn btn-primary w-100 py-3">
 
-    Back to Dashboard
+     Dashboard
 
 </a>
+
+</div>
+
+<div class="col-md-4 mb-3 mb-md-0">
+
+<a href="manage_users.jsp"
+   class="btn btn-success w-100 py-3">
+
+     Users
+
+</a>
+
+</div>
+
+<div class="col-md-4">
+
+<a href="reports.jsp"
+   class="btn btn-dark w-100 py-3">
+
+     Reports
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 

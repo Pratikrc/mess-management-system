@@ -16,6 +16,95 @@ if (email == null || role == null || !role.equals("admin")) {
 
     return;
 }
+
+int lunchCount = 0;
+
+int dinnerCount = 0;
+
+int totalAttendance = 0;
+
+int presentCount = 0;
+
+int absentCount = 0;
+
+try {
+
+    Connection con = DBConnection.getConnection();
+
+    Statement st = con.createStatement();
+
+    // 🍛 LUNCH COUNT
+
+    ResultSet rs1 = st.executeQuery(
+
+        "SELECT COUNT(*) FROM attendance " +
+        "WHERE meal_type='Lunch' " +
+        "AND status='Present' " +
+        "AND meal_date=CURDATE()"
+    );
+
+    if (rs1.next()) {
+
+        lunchCount = rs1.getInt(1);
+    }
+
+    // 🍽️ DINNER COUNT
+
+    ResultSet rs2 = st.executeQuery(
+
+        "SELECT COUNT(*) FROM attendance " +
+        "WHERE meal_type='Dinner' " +
+        "AND status='Present' " +
+        "AND meal_date=CURDATE()"
+    );
+
+    if (rs2.next()) {
+
+        dinnerCount = rs2.getInt(1);
+    }
+
+    // 📊 TOTAL ATTENDANCE
+
+    ResultSet rs3 = st.executeQuery(
+
+        "SELECT COUNT(*) FROM attendance"
+    );
+
+    if (rs3.next()) {
+
+        totalAttendance = rs3.getInt(1);
+    }
+
+    // ✅ PRESENT COUNT
+
+    ResultSet rs4 = st.executeQuery(
+
+        "SELECT COUNT(*) FROM attendance " +
+        "WHERE status='Present'"
+    );
+
+    if (rs4.next()) {
+
+        presentCount = rs4.getInt(1);
+    }
+
+    // ❌ ABSENT COUNT
+
+    ResultSet rs5 = st.executeQuery(
+
+        "SELECT COUNT(*) FROM attendance " +
+        "WHERE status='Absent'"
+    );
+
+    if (rs5.next()) {
+
+        absentCount = rs5.getInt(1);
+    }
+
+} catch (Exception e) {
+
+    e.printStackTrace();
+}
 %>
 
 <!DOCTYPE html>
@@ -36,114 +125,324 @@ if (email == null || role == null || !role.equals("admin")) {
 <link rel="stylesheet"
       href="../css/style.css">
 
-
 </head>
 
-<body class="bg-light">
-
-<!-- 🔥 NAVBAR -->
-
-<nav class="navbar navbar-dark bg-dark">
+<body>
 
 <div class="container-fluid">
 
-<span class="navbar-brand">
+<div class="row">
 
-    Attendance
+<!-- ===================================
+     SIDEBAR
+=================================== -->
 
-</span>
+<div class="col-lg-2 col-md-3 bg-dark text-white min-vh-100 p-3">
+
+<h3 class="text-center mb-4">
+
+    Smart Mess
+
+</h3>
+
+<hr class="bg-light">
+
+<div class="d-grid gap-2">
 
 <a href="dashboard.jsp"
-   class="btn btn-light btn-sm">
+   class="btn btn-outline-light text-start">
 
-    Back
+    📊 Dashboard
+
+</a>
+
+<a href="manage_users.jsp"
+   class="btn btn-outline-light text-start">
+
+    👥 Manage Users
+
+</a>
+
+<a href="add_menu.jsp"
+   class="btn btn-outline-light text-start">
+
+    🍽️ Manage Menu
+
+</a>
+
+<a href="add_announcement.jsp"
+   class="btn btn-outline-light text-start">
+
+    📢 Announcement
+
+</a>
+
+<a href="view_attendance.jsp"
+   class="btn btn-outline-light text-start">
+
+    📋 Attendance
+
+</a>
+
+<a href="meal_verification.jsp"
+   class="btn btn-outline-light text-start">
+
+    ✅ Meal Verification
+
+</a>
+
+<a href="view_payments.jsp"
+   class="btn btn-outline-light text-start">
+
+    💳 Payments
+
+</a>
+
+<a href="view_subscription.jsp"
+   class="btn btn-outline-light text-start">
+
+    📅 Subscriptions
+
+</a>
+
+<a href="view_feedback.jsp"
+   class="btn btn-outline-light text-start">
+
+    💬 Feedback
+
+</a>
+
+<a href="reports.jsp"
+   class="btn btn-outline-light text-start">
+
+    📈 Reports
+
+</a>
+
+<a href="../logout"
+   class="btn btn-danger text-start mt-3">
+
+    🚪 Logout
 
 </a>
 
 </div>
 
-</nav>
+</div>
 
-<div class="container py-4">
+<!-- ===================================
+     MAIN CONTENT
+=================================== -->
 
-<!-- 🔥 PAGE TITLE -->
+<div class="col-lg-10 col-md-9 p-4">
 
-<h3 class="mb-4 text-center text-md-start">
+<!-- ===================================
+     TOPBAR
+=================================== -->
 
-    📋 Attendance Records
+<div class="topbar d-flex justify-content-between align-items-center flex-wrap">
+
+<div>
+
+<h3 class="mb-1">
+
+    📋 Attendance Analytics
 
 </h3>
 
-<!-- 🔥 TODAY COUNT -->
+<p class="text-muted mb-0">
 
-<%
-int lunchCount = 0;
+    Monitor user meal attendance records
 
-int dinnerCount = 0;
+</p>
 
-try {
+</div>
 
-    Connection con = DBConnection.getConnection();
+<div class="mt-2 mt-md-0">
 
-    Statement st = con.createStatement();
+<span class="badge bg-gradient-primary p-3">
 
-    // 🍛 LUNCH COUNT
-    ResultSet rs1 = st.executeQuery(
+    Live Attendance Monitoring
 
-        "SELECT COUNT(*) FROM attendance " +
-        "WHERE meal_type='Lunch' " +
-        "AND status='Present' " +
-        "AND meal_date=CURDATE()"
-    );
+</span>
 
-    if (rs1.next()) {
+</div>
 
-        lunchCount = rs1.getInt(1);
-    }
+</div>
 
-    // 🍽️ DINNER COUNT
-    ResultSet rs2 = st.executeQuery(
-
-        "SELECT COUNT(*) FROM attendance " +
-        "WHERE meal_type='Dinner' " +
-        "AND status='Present' " +
-        "AND meal_date=CURDATE()"
-    );
-
-    if (rs2.next()) {
-
-        dinnerCount = rs2.getInt(1);
-    }
-
-} catch (Exception e) {
-
-    e.printStackTrace();
-}
-%>
-
-<!-- 📊 SUMMARY CARDS -->
+<!-- ===================================
+     ANALYTICS CARDS
+=================================== -->
 
 <div class="row mb-4">
 
-<!-- LUNCH -->
+<!-- TOTAL -->
 
-<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+<div class="col-lg-3 col-md-6 mb-4">
 
-<div class="card shadow-sm border-0 bg-success text-white">
+<div class="card dashboard-card bg-gradient-primary h-100">
 
-<div class="card-body text-center">
+<div class="card-body">
 
 <h5>
 
-    🍛 Lunch Present
+    📊 Total Records
 
 </h5>
 
 <h2>
 
-    <%= lunchCount %>
+    <%= totalAttendance %>
 
 </h2>
+
+<p class="mb-0">
+
+    All attendance entries
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- PRESENT -->
+
+<div class="col-lg-3 col-md-6 mb-4">
+
+<div class="card dashboard-card bg-gradient-success h-100">
+
+<div class="card-body">
+
+<h5>
+
+    ✅ Present
+
+</h5>
+
+<h2>
+
+    <%= presentCount %>
+
+</h2>
+
+<p class="mb-0">
+
+    Total present meals
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ABSENT -->
+
+<div class="col-lg-3 col-md-6 mb-4">
+
+<div class="card dashboard-card bg-gradient-danger h-100">
+
+<div class="card-body">
+
+<h5>
+
+    ❌ Absent
+
+</h5>
+
+<h2>
+
+    <%= absentCount %>
+
+</h2>
+
+<p class="mb-0">
+
+    Total absent meals
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- TODAY -->
+
+<div class="col-lg-3 col-md-6 mb-4">
+
+<div class="card dashboard-card bg-gradient-warning h-100">
+
+<div class="card-body">
+
+<h5>
+
+    📅 Today's Meals
+
+</h5>
+
+<h2>
+
+    <%= lunchCount + dinnerCount %>
+
+</h2>
+
+<p class="mb-0">
+
+    Today's present meals
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ===================================
+     TODAY SUMMARY
+=================================== -->
+
+<div class="row mb-4">
+
+<!-- LUNCH -->
+
+<div class="col-lg-6 col-md-6 mb-4">
+
+<div class="card border-0 bg-gradient-success text-white h-100">
+
+<div class="card-body text-center p-4">
+
+<div style="font-size:60px;">
+
+    🍛
+
+</div>
+
+<h4 class="mt-3">
+
+    Lunch Attendance
+
+</h4>
+
+<h1 class="fw-bold">
+
+    <%= lunchCount %>
+
+</h1>
+
+<p class="mb-0">
+
+    Present students today
+
+</p>
 
 </div>
 
@@ -153,23 +452,35 @@ try {
 
 <!-- DINNER -->
 
-<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+<div class="col-lg-6 col-md-6 mb-4">
 
-<div class="card shadow-sm border-0 bg-primary text-white">
+<div class="card border-0 bg-gradient-primary text-white h-100">
 
-<div class="card-body text-center">
+<div class="card-body text-center p-4">
 
-<h5>
+<div style="font-size:60px;">
 
-    🍽️ Dinner Present
+    🍽️
 
-</h5>
+</div>
 
-<h2>
+<h4 class="mt-3">
+
+    Dinner Attendance
+
+</h4>
+
+<h1 class="fw-bold">
 
     <%= dinnerCount %>
 
-</h2>
+</h1>
+
+<p class="mb-0">
+
+    Present students today
+
+</p>
 
 </div>
 
@@ -179,12 +490,36 @@ try {
 
 </div>
 
-<!-- 📤 EXPORT BUTTON -->
+<!-- ===================================
+     ACTION BAR
+=================================== -->
 
-<div class="mb-4">
+<div class="card border-0 mb-4">
+
+<div class="card-body">
+
+<div class="d-flex justify-content-between align-items-center flex-wrap">
+
+<div>
+
+<h4 class="mb-1">
+
+    📤 Export Attendance Data
+
+</h4>
+
+<p class="text-muted mb-0">
+
+    Download attendance records as CSV
+
+</p>
+
+</div>
+
+<div class="mt-3 mt-md-0">
 
 <a href="../exportAttendance"
-   class="btn btn-success w-100 w-md-auto">
+   class="btn btn-success px-4 py-3">
 
     📤 Export CSV
 
@@ -192,27 +527,55 @@ try {
 
 </div>
 
-<!-- 📋 ATTENDANCE TABLE -->
+</div>
 
-<div class="card shadow-sm border-0">
+</div>
+
+</div>
+
+<!-- ===================================
+     ATTENDANCE TABLE
+=================================== -->
+
+<div class="card border-0">
 
 <div class="card-body">
 
+<div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+
+<div>
+
+<h4 class="mb-1">
+
+    📋 Attendance Records
+
+</h4>
+
+<p class="text-muted mb-0">
+
+    Complete attendance history
+
+</p>
+
+</div>
+
+</div>
+
 <div class="table-responsive">
 
-<table class="table table-bordered table-striped table-hover align-middle">
+<table class="table table-hover align-middle">
 
-<thead class="table-dark">
+<thead>
 
 <tr>
 
-    <th>Email</th>
+<th>User</th>
 
-    <th>Date</th>
+<th>Date</th>
 
-    <th>Meal Type</th>
+<th>Meal Type</th>
 
-    <th>Status</th>
+<th>Status</th>
 
 </tr>
 
@@ -242,15 +605,46 @@ try {
         String mealType = rs.getString("meal_type");
 
         String status = rs.getString("status");
+
+        String userEmail = rs.getString("user_email");
 %>
 
 <tr>
 
-<!-- EMAIL -->
+<!-- USER -->
 
 <td>
 
-    <%= rs.getString("user_email") %>
+<div class="d-flex align-items-center">
+
+<div class="me-3">
+
+<div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+     style="width:42px; height:42px; font-weight:600;">
+
+    <%= userEmail.substring(0,1).toUpperCase() %>
+
+</div>
+
+</div>
+
+<div>
+
+<h6 class="mb-0 fw-semibold">
+
+    <%= userEmail %>
+
+</h6>
+
+<small class="text-muted">
+
+    Smart Mess User
+
+</small>
+
+</div>
+
+</div>
 
 </td>
 
@@ -271,7 +665,9 @@ try {
         ? "bg-success"
         : "bg-primary" %>">
 
-    <%= mealType %>
+    <%= "Lunch".equals(mealType)
+        ? "🍛 Lunch"
+        : "🍽️ Dinner" %>
 
 </span>
 
@@ -303,9 +699,25 @@ try {
 <tr>
 
 <td colspan="4"
-    class="text-center text-danger py-4">
+    class="text-center py-5">
 
-    No attendance records found
+<div style="font-size:70px;">
+
+    📋
+
+</div>
+
+<h3 class="mt-3">
+
+    No Attendance Records Found
+
+</h3>
+
+<p class="text-muted">
+
+    No attendance data available yet.
+
+</p>
 
 </td>
 
@@ -330,16 +742,56 @@ try {
 
 </div>
 
-<!-- 🔙 BACK BUTTON -->
+<!-- ===================================
+     QUICK ACTIONS
+=================================== -->
 
-<div class="text-center mt-4">
+<div class="card mt-4">
+
+<div class="card-body">
+
+<div class="row text-center">
+
+<div class="col-md-4 mb-3 mb-md-0">
 
 <a href="dashboard.jsp"
-   class="btn btn-secondary w-100 w-md-auto px-4">
+   class="btn btn-primary w-100 py-3">
 
-    Back to Dashboard
+    🏠 Dashboard
 
 </a>
+
+</div>
+
+<div class="col-md-4 mb-3 mb-md-0">
+
+<a href="reports.jsp"
+   class="btn btn-success w-100 py-3">
+
+    📊 Reports
+
+</a>
+
+</div>
+
+<div class="col-md-4">
+
+<a href="manage_users.jsp"
+   class="btn btn-dark w-100 py-3">
+
+    👥 Users
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 

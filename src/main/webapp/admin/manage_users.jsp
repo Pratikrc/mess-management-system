@@ -12,6 +12,65 @@ if (email == null || role == null || !role.equals("admin")) {
 
     return;
 }
+
+int totalUsers = 0;
+
+int approvedUsers = 0;
+
+int pendingUsers = 0;
+
+try {
+
+    Connection con = DBConnection.getConnection();
+
+    // TOTAL USERS
+
+    PreparedStatement ps1 = con.prepareStatement(
+
+        "SELECT COUNT(*) FROM users"
+    );
+
+    ResultSet rs1 = ps1.executeQuery();
+
+    if (rs1.next()) {
+
+        totalUsers = rs1.getInt(1);
+    }
+
+    // APPROVED USERS
+
+    PreparedStatement ps2 = con.prepareStatement(
+
+        "SELECT COUNT(*) FROM users " +
+        "WHERE status='approved'"
+    );
+
+    ResultSet rs2 = ps2.executeQuery();
+
+    if (rs2.next()) {
+
+        approvedUsers = rs2.getInt(1);
+    }
+
+    // PENDING USERS
+
+    PreparedStatement ps3 = con.prepareStatement(
+
+        "SELECT COUNT(*) FROM users " +
+        "WHERE status='pending'"
+    );
+
+    ResultSet rs3 = ps3.executeQuery();
+
+    if (rs3.next()) {
+
+        pendingUsers = rs3.getInt(1);
+    }
+
+} catch(Exception e) {
+
+    e.printStackTrace();
+}
 %>
 
 <!DOCTYPE html>
@@ -34,64 +93,297 @@ if (email == null || role == null || !role.equals("admin")) {
 
 </head>
 
-<body class="bg-light">
-
-<!-- 🔥 NAVBAR -->
-
-<nav class="navbar navbar-dark bg-dark">
+<body>
 
 <div class="container-fluid">
 
-<span class="navbar-brand">
+<div class="row">
 
-    Manage Users
+<!-- ===================================
+     SIDEBAR
+=================================== -->
 
-</span>
+<div class="col-lg-2 col-md-3 bg-dark text-white min-vh-100 p-3">
+
+<h3 class="text-center mb-4">
+
+    Smart Mess
+
+</h3>
+
+<hr class="bg-light">
+
+<div class="d-grid gap-2">
 
 <a href="dashboard.jsp"
-   class="btn btn-light btn-sm">
+   class="btn btn-outline-light text-start">
 
-    Back
+     Dashboard
+
+</a>
+
+<a href="manage_users.jsp"
+   class="btn btn-outline-light text-start">
+
+     Manage Users
+
+</a>
+
+<a href="add_menu.jsp"
+   class="btn btn-outline-light text-start">
+
+     Manage Menu
+
+</a>
+
+<a href="add_announcement.jsp"
+   class="btn btn-outline-light text-start">
+
+     Announcement
+
+</a>
+
+<a href="view_attendance.jsp"
+   class="btn btn-outline-light text-start">
+
+     Attendance
+
+</a>
+
+<a href="meal_verification.jsp"
+   class="btn btn-outline-light text-start">
+
+     Meal Verification
+
+</a>
+
+<a href="view_payments.jsp"
+   class="btn btn-outline-light text-start">
+
+     Payments
+
+</a>
+
+<a href="view_subscription.jsp"
+   class="btn btn-outline-light text-start">
+
+     Subscriptions
+
+</a>
+
+<a href="view_feedback.jsp"
+   class="btn btn-outline-light text-start">
+
+     Feedback
+
+</a>
+
+<a href="reports.jsp"
+   class="btn btn-outline-light text-start">
+
+     Reports
+
+</a>
+
+<a href="../logout"
+   class="btn btn-danger text-start mt-3">
+
+     Logout
 
 </a>
 
 </div>
 
-</nav>
+</div>
 
-<div class="container py-4">
+<!-- ===================================
+     MAIN CONTENT
+=================================== -->
 
-<!-- 🔥 PAGE TITLE -->
+<div class="col-lg-10 col-md-9 p-4">
+<!-- ===================================
+     TOPBAR
+=================================== -->
 
-<h3 class="mb-4 text-center text-md-start">
+<div class="topbar d-flex justify-content-between align-items-center flex-wrap">
 
-    &#128101; User List
+<div>
+
+<h3 class="mb-1">
+
+     User Management
 
 </h3>
 
-<!-- 🔥 USER TABLE CARD -->
+<p class="text-muted mb-0">
 
-<div class="card shadow-sm border-0">
+    Manage and approve Smart Mess users
+
+</p>
+
+</div>
+
+<div class="mt-2 mt-md-0">
+
+<span class="badge bg-gradient-primary p-3">
+
+    Admin Control Panel
+
+</span>
+
+</div>
+
+</div>
+
+<!-- ===================================
+     ANALYTICS CARDS
+=================================== -->
+
+<div class="row mb-4">
+
+<!-- TOTAL USERS -->
+
+<div class="col-lg-4 col-md-6 mb-4">
+
+<div class="card dashboard-card bg-gradient-primary h-100">
 
 <div class="card-body">
 
+<h5>
+
+     Total Users
+
+</h5>
+
+<h2>
+
+    <%= totalUsers %>
+
+</h2>
+
+<p class="mb-0">
+
+    Registered users
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- APPROVED -->
+
+<div class="col-lg-4 col-md-6 mb-4">
+
+<div class="card dashboard-card bg-gradient-success h-100">
+
+<div class="card-body">
+
+<h5>
+
+     Approved Users
+
+</h5>
+
+<h2>
+
+    <%= approvedUsers %>
+
+</h2>
+
+<p class="mb-0">
+
+    Active approved users
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- PENDING -->
+
+<div class="col-lg-4 col-md-6 mb-4">
+
+<div class="card dashboard-card bg-gradient-warning h-100">
+
+<div class="card-body">
+
+<h5>
+
+     Pending Users
+
+</h5>
+
+<h2>
+
+    <%= pendingUsers %>
+
+</h2>
+
+<p class="mb-0">
+
+    Awaiting admin approval
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ===================================
+     USER TABLE
+=================================== -->
+
+<div class="card border-0">
+
+<div class="card-body">
+
+<div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+
+<div>
+
+<h4 class="mb-1">
+
+     User Directory
+
+</h4>
+
+<p class="text-muted mb-0">
+
+    Complete registered users list
+
+</p>
+
+</div>
+
+</div>
+
 <div class="table-responsive">
 
-<table class="table table-bordered table-striped table-hover align-middle">
+<table class="table table-hover align-middle">
 
-<thead class="table-dark">
+<thead>
 
 <tr>
 
-    <th>Name</th>
+<th>Name</th>
 
-    <th>Email</th>
+<th>Email</th>
 
-    <th>Phone Number</th>
+<th>Phone</th>
 
-    <th>Status</th>
+<th>Status</th>
 
-    <th>Action</th>
+<th>Action</th>
 
 </tr>
 
@@ -106,7 +398,6 @@ try {
 
     Statement st = con.createStatement();
 
-    // ✅ FIXED QUERY
     ResultSet rs = st.executeQuery(
 
         "SELECT * FROM users ORDER BY name ASC"
@@ -117,15 +408,48 @@ try {
     while (rs.next()) {
 
         hasData = true;
+
+        String status = rs.getString("status");
+
+        String phone = rs.getString("phone");
 %>
 
 <tr>
 
 <!-- NAME -->
 
-<td class="fw-semibold">
+<td>
+
+<div class="d-flex align-items-center">
+
+<div class="me-3">
+
+<div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+     style="width:45px; height:45px; font-weight:600;">
+
+    <%= rs.getString("name").substring(0,1).toUpperCase() %>
+
+</div>
+
+</div>
+
+<div>
+
+<h6 class="mb-0 fw-semibold">
 
     <%= rs.getString("name") %>
+
+</h6>
+
+<small class="text-muted">
+
+    Smart Mess User
+
+</small>
+
+</div>
+
+</div>
 
 </td>
 
@@ -142,12 +466,14 @@ try {
 <td>
 
 <%
-String phone = rs.getString("phone");
-
 if (phone != null && !phone.isEmpty()) {
 %>
 
+<span class="fw-semibold">
+
     <%= phone %>
+
+</span>
 
 <%
 } else {
@@ -170,11 +496,11 @@ if (phone != null && !phone.isEmpty()) {
 <td>
 
 <span class="badge
-    <%= rs.getString("status").equals("approved")
+    <%= "approved".equals(status)
         ? "bg-success"
         : "bg-warning text-dark" %>">
 
-    <%= rs.getString("status") %>
+    <%= status.toUpperCase() %>
 
 </span>
 
@@ -185,13 +511,13 @@ if (phone != null && !phone.isEmpty()) {
 <td>
 
 <%
-if (rs.getString("status").equals("pending")) {
+if ("pending".equals(status)) {
 %>
 
 <a href="../approveUser?email=<%= rs.getString("email") %>"
-   class="btn btn-success btn-sm w-100">
+   class="btn btn-success btn-sm px-4">
 
-    Approve
+     Approve
 
 </a>
 
@@ -199,11 +525,12 @@ if (rs.getString("status").equals("pending")) {
 } else {
 %>
 
-<span class="text-success fw-bold">
+<button class="btn btn-outline-success btn-sm"
+        disabled>
 
     Approved
 
-</span>
+</button>
 
 <%
 }
@@ -216,16 +543,31 @@ if (rs.getString("status").equals("pending")) {
 <%
     }
 
-    // ✅ NO DATA MESSAGE
     if (!hasData) {
 %>
 
 <tr>
 
 <td colspan="5"
-    class="text-center text-danger py-4">
+    class="text-center py-5">
 
-    No users found
+<div style="font-size:60px;">
+
+    
+
+</div>
+
+<h4 class="mt-3">
+
+    No Users Found
+
+</h4>
+
+<p class="text-muted">
+
+    No registered users available.
+
+</p>
 
 </td>
 
@@ -239,7 +581,7 @@ if (rs.getString("status").equals("pending")) {
     out.println(
 
         "<tr>" +
-        "<td colspan='5' class='text-danger text-center'>" +
+        "<td colspan='5' class='text-danger text-center py-4'>" +
         "Database Error: " + e.getMessage() +
         "</td>" +
         "</tr>"
@@ -259,16 +601,56 @@ if (rs.getString("status").equals("pending")) {
 
 </div>
 
-<!-- 🔙 BACK BUTTON -->
+<!-- ===================================
+     QUICK ACTIONS
+=================================== -->
 
-<div class="text-center mt-4">
+<div class="card mt-4">
+
+<div class="card-body">
+
+<div class="row text-center">
+
+<div class="col-md-4 mb-3 mb-md-0">
 
 <a href="dashboard.jsp"
-   class="btn btn-secondary w-100 w-md-auto px-4">
+   class="btn btn-primary w-100 py-3">
 
-    Back to Dashboard
+     Dashboard
 
 </a>
+
+</div>
+
+<div class="col-md-4 mb-3 mb-md-0">
+
+<a href="view_payments.jsp"
+   class="btn btn-success w-100 py-3">
+
+     Payments
+
+</a>
+
+</div>
+
+<div class="col-md-4">
+
+<a href="reports.jsp"
+   class="btn btn-dark w-100 py-3">
+
+     Reports
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 

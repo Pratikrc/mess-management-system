@@ -36,23 +36,155 @@ if (type == null) {
 
 </head>
 
-<body class="bg-light">
+<body>
 
-<div class="container py-4">
+<div class="container-fluid">
 
-<!-- 🔥 PAGE TITLE -->
+<div class="row">
+
+<!-- ===================================
+     SIDEBAR
+=================================== -->
+
+<div class="col-lg-2 col-md-3 bg-dark text-white min-vh-100 p-3">
 
 <h3 class="text-center mb-4">
 
-    Mark Attendance
+    Smart Mess
 
 </h3>
 
-<!-- 🔔 MESSAGE -->
+<hr class="bg-light">
+
+<div class="d-grid gap-2">
+
+<a href="dashboard.jsp"
+   class="btn btn-outline-light text-start">
+             Dashboard
+
+        </a>
+
+        <!-- VIEW MENU -->
+
+        <a href="view_menu.jsp"
+          class="btn btn-outline-light text-start">
+
+             View Menu
+
+        </a>
+
+        <!-- ATTENDANCE -->
+
+        <a href="attendance.jsp"
+          class="btn btn-outline-light text-start">
+             Attendance
+
+        </a>
+
+        <!-- ATTENDANCE HISTORY -->
+
+        <a href="attendance_history.jsp"
+           class="btn btn-outline-light text-start">
+
+             Attendance History
+
+        </a>
+
+        <!-- SUBSCRIPTION -->
+
+        <a href="subscription.jsp"
+           class="btn btn-outline-light text-start">
+
+             Subscription
+
+        </a>
+
+        <!-- PAYMENTS -->
+
+        <a href="view_payment.jsp"
+           class="btn btn-outline-light text-start">
+
+             Payments
+
+        </a>
+
+        <!-- SKIP DAY -->
+
+        <a href="skip_day.jsp"
+          class="btn btn-outline-light text-start">
+
+             Skip Day
+
+        </a>
+
+        <!-- FEEDBACK -->
+
+        <a href="feedback.jsp"
+           class="btn btn-outline-light text-start">
+
+             Feedback
+
+        </a>
+
+        <!-- LOGOUT -->
+
+        <a href="../logout"
+           class="btn btn-danger text-start mt-3">
+
+             Logout
+
+        </a>
+
+    </div>
+
+</div>
+
+<!-- ===================================
+     MAIN CONTENT
+=================================== -->
+
+<div class="col-lg-10 col-md-9 p-4 main-content">
+<!-- ===================================
+     TOPBAR
+=================================== -->
+
+<div class="topbar d-flex justify-content-between align-items-center flex-wrap">
+
+<div>
+
+<h3 class="mb-1">
+
+     Mark Attendance
+
+</h3>
+
+<p class="text-muted mb-0">
+
+    Submit your meal attendance for today
+
+</p>
+
+</div>
+
+<div class="mt-2 mt-md-0">
+
+<span class="badge bg-gradient-primary p-3">
+
+    Attendance Portal
+
+</span>
+
+</div>
+
+</div>
+
+<!-- ===================================
+     MESSAGE ALERT
+=================================== -->
 
 <% if (message != null) { %>
 
-<div class="alert alert-<%= type %> text-center shadow-sm">
+<div class="alert alert-<%= type %> shadow-soft mb-4 text-center">
 
     <%= message %>
 
@@ -60,21 +192,55 @@ if (type == null) {
 
 <% } %>
 
+<!-- ===================================
+     ATTENDANCE CARDS
+=================================== -->
+
 <div class="row">
 
-<!-- 🍛 LUNCH CARD -->
+<!-- ===================================
+     LUNCH CARD
+=================================== -->
 
-<div class="col-lg-6 col-md-6 col-sm-12 mb-4">
+<div class="col-xl-6 col-lg-6 col-md-12 mb-4">
 
-<div class="card shadow-sm border-0 h-100">
+<div class="card border-0 h-100 overflow-hidden">
+
+<!-- HEADER -->
+
+<div class="bg-gradient-success text-white p-4">
+
+<div class="d-flex justify-content-between align-items-center">
+
+<div>
+
+<h3 class="mb-1">
+
+     Lunch
+
+</h3>
+
+<p class="mb-0 opacity-75">
+
+    Afternoon meal attendance
+
+</p>
+
+</div>
+
+<div style="font-size:48px; opacity:0.2;">
+
+    
+
+</div>
+
+</div>
+
+</div>
+
+<!-- BODY -->
 
 <div class="card-body">
-
-<h4 class="text-success mb-4 text-center">
-
-    🍛 Lunch
-
-</h4>
 
 <form action="<%=request.getContextPath()%>/attendance"
       method="post">
@@ -83,44 +249,80 @@ if (type == null) {
        name="meal_type"
        value="Lunch">
 
-<!-- PRESENT -->
+<!-- PRESENT OPTION -->
 
-<div class="form-check mb-3">
+<label class="w-100 mb-3">
 
-    <input class="form-check-input"
-           type="radio"
-           name="status"
-           value="Present"
-           required>
+<div class="card border shadow-sm">
 
-    <label class="form-check-label">
+<div class="card-body d-flex justify-content-between align-items-center">
 
-        Present
+<div>
 
-    </label>
+<h5 class="mb-1 text-success">
+
+    Present
+
+</h5>
+
+<p class="text-muted mb-0">
+
+    I will attend lunch today
+
+</p>
+
+</div>
+
+<input class="form-check-input"
+       type="radio"
+       name="status"
+       value="Present"
+       required>
 
 </div>
 
-<!-- ABSENT -->
+</div>
 
-<div class="form-check mb-4">
+</label>
 
-    <input class="form-check-input"
-           type="radio"
-           name="status"
-           value="Absent"
-           required>
+<!-- ABSENT OPTION -->
 
-    <label class="form-check-label">
+<label class="w-100 mb-4">
 
-        Absent
+<div class="card border shadow-sm">
 
-    </label>
+<div class="card-body d-flex justify-content-between align-items-center">
+
+<div>
+
+<h5 class="mb-1 text-danger">
+
+    Absent
+
+</h5>
+
+<p class="text-muted mb-0">
+
+    I will skip lunch today
+
+</p>
 
 </div>
+
+<input class="form-check-input"
+       type="radio"
+       name="status"
+       value="Absent"
+       required>
+
+</div>
+
+</div>
+
+</label>
 
 <button type="submit"
-        class="btn btn-success w-100 py-2">
+        class="btn btn-success w-100 py-3">
 
     Submit Lunch Attendance
 
@@ -134,19 +336,49 @@ if (type == null) {
 
 </div>
 
-<!-- 🍽️ DINNER CARD -->
+<!-- ===================================
+     DINNER CARD
+=================================== -->
 
-<div class="col-lg-6 col-md-6 col-sm-12 mb-4">
+<div class="col-xl-6 col-lg-6 col-md-12 mb-4">
 
-<div class="card shadow-sm border-0 h-100">
+<div class="card border-0 h-100 overflow-hidden">
+
+<!-- HEADER -->
+
+<div class="bg-gradient-primary text-white p-4">
+
+<div class="d-flex justify-content-between align-items-center">
+
+<div>
+
+<h3 class="mb-1">
+
+     Dinner
+
+</h3>
+
+<p class="mb-0 opacity-75">
+
+    Evening meal attendance
+
+</p>
+
+</div>
+
+<div style="font-size:48px; opacity:0.2;">
+
+    
+
+</div>
+
+</div>
+
+</div>
+
+<!-- BODY -->
 
 <div class="card-body">
-
-<h4 class="text-primary mb-4 text-center">
-
-    🍽️ Dinner
-
-</h4>
 
 <form action="<%=request.getContextPath()%>/attendance"
       method="post">
@@ -155,44 +387,80 @@ if (type == null) {
        name="meal_type"
        value="Dinner">
 
-<!-- PRESENT -->
+<!-- PRESENT OPTION -->
 
-<div class="form-check mb-3">
+<label class="w-100 mb-3">
 
-    <input class="form-check-input"
-           type="radio"
-           name="status"
-           value="Present"
-           required>
+<div class="card border shadow-sm">
 
-    <label class="form-check-label">
+<div class="card-body d-flex justify-content-between align-items-center">
 
-        Present
+<div>
 
-    </label>
+<h5 class="mb-1 text-success">
+
+    Present
+
+</h5>
+
+<p class="text-muted mb-0">
+
+    I will attend dinner today
+
+</p>
+
+</div>
+
+<input class="form-check-input"
+       type="radio"
+       name="status"
+       value="Present"
+       required>
 
 </div>
 
-<!-- ABSENT -->
+</div>
 
-<div class="form-check mb-4">
+</label>
 
-    <input class="form-check-input"
-           type="radio"
-           name="status"
-           value="Absent"
-           required>
+<!-- ABSENT OPTION -->
 
-    <label class="form-check-label">
+<label class="w-100 mb-4">
 
-        Absent
+<div class="card border shadow-sm">
 
-    </label>
+<div class="card-body d-flex justify-content-between align-items-center">
+
+<div>
+
+<h5 class="mb-1 text-danger">
+
+    Absent
+
+</h5>
+
+<p class="text-muted mb-0">
+
+    I will skip dinner today
+
+</p>
 
 </div>
+
+<input class="form-check-input"
+       type="radio"
+       name="status"
+       value="Absent"
+       required>
+
+</div>
+
+</div>
+
+</label>
 
 <button type="submit"
-        class="btn btn-primary w-100 py-2">
+        class="btn btn-primary w-100 py-3">
 
     Submit Dinner Attendance
 
@@ -208,16 +476,56 @@ if (type == null) {
 
 </div>
 
-<!-- 🔙 BACK BUTTON -->
+<!-- ===================================
+     FOOTER ACTIONS
+=================================== -->
 
-<div class="text-center mt-2">
+<div class="card mt-2">
 
-<a href="dashboard.jsp"
-   class="btn btn-secondary w-100 w-md-auto px-4">
+<div class="card-body">
 
-    Back to Dashboard
+<div class="row text-center">
+
+<div class="col-md-4 mb-3 mb-md-0">
+
+<a href="view_menu.jsp"
+   class="btn btn-success w-100 py-3">
+
+     View Menu
 
 </a>
+
+</div>
+
+<div class="col-md-4 mb-3 mb-md-0">
+
+<a href="attendance_history.jsp"
+   class="btn btn-dark w-100 py-3">
+
+     Attendance History
+
+</a>
+
+</div>
+
+<div class="col-md-4">
+
+<a href="dashboard.jsp"
+   class="btn btn-primary w-100 py-3">
+
+     Dashboard
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 

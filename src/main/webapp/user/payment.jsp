@@ -27,7 +27,8 @@ try {
 
     Connection con = DBConnection.getConnection();
 
-    // 🔥 SUBSCRIPTION CHECK
+    // SUBSCRIPTION CHECK
+
     PreparedStatement ps1 = con.prepareStatement(
 
         "SELECT * FROM subscription " +
@@ -53,7 +54,8 @@ try {
         }
     }
 
-    // 🔥 PENDING PAYMENT CHECK
+    // PENDING PAYMENT CHECK
+
     PreparedStatement ps2 = con.prepareStatement(
 
         "SELECT 1 FROM payments " +
@@ -96,27 +98,149 @@ try {
 
 </head>
 
-<body class="bg-light">
+<body>
 
-<div class="container py-4">
+<div class="container-fluid">
 
-<div class="row justify-content-center">
+<div class="row">
 
-<div class="col-lg-6 col-md-8 col-sm-12">
+<!-- ===================================
+     SIDEBAR
+=================================== -->
 
-<div class="card shadow-sm border-0">
-
-<div class="card-body p-4">
-
-<!-- 🔥 TITLE -->
+<div class="col-lg-2 col-md-3 bg-dark text-white min-vh-100 p-3">
 
 <h3 class="text-center mb-4">
+
+    Smart Mess
+
+</h3>
+
+<hr class="bg-light">
+
+<div class="d-grid gap-2">
+
+<a href="dashboard.jsp"
+   class="btn btn-outline-light text-start">
+            🏠 Dashboard
+
+        </a>
+
+        <!-- VIEW MENU -->
+
+        <a href="view_menu.jsp"
+          class="btn btn-outline-light text-start">
+
+            🍽️ View Menu
+
+        </a>
+
+        <!-- ATTENDANCE -->
+
+        <a href="attendance.jsp"
+          class="btn btn-outline-light text-start">
+            📋 Attendance
+
+        </a>
+
+        <!-- ATTENDANCE HISTORY -->
+
+        <a href="attendance_history.jsp"
+           class="btn btn-outline-light text-start">
+
+            📊 Attendance History
+
+        </a>
+
+        <!-- SUBSCRIPTION -->
+
+        <a href="subscription.jsp"
+           class="btn btn-outline-light text-start">
+
+            🗓️ Subscription
+
+        </a>
+
+        <!-- PAYMENTS -->
+
+        <a href="view_payment.jsp"
+           class="btn btn-outline-light text-start">
+
+            💳 Payments
+
+        </a>
+
+        <!-- SKIP DAY -->
+
+        <a href="skip_day.jsp"
+          class="btn btn-outline-light text-start">
+
+            ⏭️ Skip Day
+
+        </a>
+
+        <!-- FEEDBACK -->
+
+        <a href="feedback.jsp"
+           class="btn btn-outline-light text-start">
+
+            💬 Feedback
+
+        </a>
+
+        <!-- LOGOUT -->
+
+        <a href="../logout"
+           class="btn btn-danger text-start mt-3">
+
+            🚪 Logout
+
+        </a>
+
+    </div>
+
+</div>
+
+<!-- ===================================
+     MAIN CONTENT
+=================================== -->
+
+<div class="col-lg-10 col-md-9 p-4 main-content">
+<!-- ===================================
+     TOPBAR
+=================================== -->
+
+<div class="topbar d-flex justify-content-between align-items-center flex-wrap">
+
+<div>
+
+<h3 class="mb-1">
 
     💳 Subscription Payment
 
 </h3>
 
-<!-- 🔔 MESSAGE -->
+<p class="text-muted mb-0">
+
+    Choose your subscription plan
+
+</p>
+
+</div>
+
+<div class="mt-2 mt-md-0">
+
+<span class="badge bg-gradient-primary p-3">
+
+    Secure Payment Portal
+
+</span>
+
+</div>
+
+</div>
+
+<!-- MESSAGE -->
 
 <%
 String msg = request.getParameter("msg");
@@ -129,7 +253,7 @@ if (msg != null) {
 <div class="alert
     <%= "success".equals(type)
         ? "alert-success"
-        : "alert-danger" %>">
+        : "alert-danger" %> shadow-soft mb-4">
 
     <%= msg %>
 
@@ -139,38 +263,64 @@ if (msg != null) {
 }
 %>
 
-<!-- ✅ ACTIVE SUBSCRIPTION -->
+<!-- ACTIVE PLAN -->
 
 <% if (active) { %>
 
-<div class="text-center">
+<div class="card border-0">
 
-<h4 class="text-success mb-3">
+<div class="card-body text-center py-5">
 
-    Already Subscribed ✅
+<div style="font-size:70px;">
 
-</h4>
-
-<div class="card bg-light border-0 p-3 mb-3">
-
-<p class="mb-2">
-
-    <b>Plan:</b>
-    <%= plan %>
-
-</p>
-
-<p class="mb-0">
-
-    <b>Expiry Date:</b>
-    <%= endDate %>
-
-</p>
+    ✅
 
 </div>
 
+<h2 class="text-success mt-3 mb-4">
+
+    Subscription Active
+
+</h2>
+
+<div class="row justify-content-center">
+
+<div class="col-md-6">
+
+<div class="card glass-card">
+
+<div class="card-body">
+
+<h4 class="mb-3">
+
+    <%= plan %> Plan
+
+</h4>
+
+<p class="mb-2">
+
+    <strong>Expiry Date:</strong>
+
+</p>
+
+<h5 class="text-primary">
+
+    <%= endDate %>
+
+</h5>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="mt-4">
+
 <a href="dashboard.jsp"
-   class="btn btn-primary w-100 py-2">
+   class="btn btn-primary px-5 py-3">
 
     Back to Dashboard
 
@@ -178,87 +328,211 @@ if (msg != null) {
 
 </div>
 
-<!-- ⏳ PENDING PAYMENT -->
+</div>
+
+</div>
+
+<!-- PENDING -->
 
 <% } else if (hasPendingPayment) { %>
 
-<div class="text-center">
+<div class="card border-0">
 
-<h4 class="text-warning mb-3">
+<div class="card-body text-center py-5">
 
-    Payment Pending Approval ⏳
+<div style="font-size:70px;">
 
-</h4>
+    ⏳
 
-<p class="mb-4">
+</div>
 
-    Please wait for admin approval.
+<h2 class="text-warning mt-3 mb-3">
+
+    Payment Pending Approval
+
+</h2>
+
+<p class="text-muted mb-4">
+
+    Please wait until admin approves your payment.
 
 </p>
 
-<a href="../login.jsp"
-   class="btn btn-success w-100 py-2">
+<a href="dashboard.jsp"
+   class="btn btn-warning px-5 py-3">
 
-    Go to Login
+    Back to Dashboard
 
 </a>
 
 </div>
 
-<!-- 💳 PAYMENT FORM -->
+</div>
+
+<!-- PAYMENT FORM -->
 
 <% } else { %>
 
 <form action="<%=request.getContextPath()%>/payment"
       method="post">
 
-<!-- PLAN -->
+<div class="row">
 
-<div class="mb-4">
+<!-- ===================================
+     WEEKLY PLAN
+=================================== -->
 
-<label class="form-label fw-bold">
+<div class="col-lg-6 mb-4">
 
-    Select Plan
+<label class="w-100">
 
-</label>
-
-<div class="card border p-3 mb-2">
-
-<div class="form-check">
-
-<input class="form-check-input"
-       type="radio"
+<input type="radio"
        name="plan"
        value="Weekly"
+       class="d-none"
        required>
 
-<label class="form-check-label">
+<div class="card h-100 border-0">
 
-    Weekly (₹500 - 7 Days)
+<div class="card-body text-center">
+
+<div class="mb-3"
+     style="font-size:55px;">
+
+    🗓️
+
+</div>
+
+<h3 class="mb-3">
+
+    Weekly Plan
+
+</h3>
+
+<h1 class="text-primary mb-3">
+
+    ₹500
+
+</h1>
+
+<p class="text-muted mb-4">
+
+    7 Days Access
+
+</p>
+
+<ul class="list-unstyled text-start">
+
+<li class="mb-2">
+
+    ✔ Lunch & Dinner
+
+</li>
+
+<li class="mb-2">
+
+    ✔ Attendance Tracking
+
+</li>
+
+<li class="mb-2">
+
+    ✔ Menu Access
+
+</li>
+
+<li>
+
+    ✔ Skip Feature
+
+</li>
+
+</ul>
+
+</div>
+
+</div>
 
 </label>
 
 </div>
 
-</div>
+<!-- ===================================
+     MONTHLY PLAN
+=================================== -->
 
-<div class="card border p-3">
+<div class="col-lg-6 mb-4">
 
-<div class="form-check">
+<label class="w-100">
 
-<input class="form-check-input"
-       type="radio"
+<input type="radio"
        name="plan"
        value="Monthly"
+       class="d-none"
        required>
 
-<label class="form-check-label">
+<div class="card h-100 border-0">
 
-    Monthly (₹2000 - 30 Days)
+<div class="card-body text-center">
 
-</label>
+<div class="mb-3"
+     style="font-size:55px;">
+
+    📅
 
 </div>
+
+<h3 class="mb-3">
+
+    Monthly Plan
+
+</h3>
+
+<h1 class="text-success mb-3">
+
+    ₹2000
+
+</h1>
+
+<p class="text-muted mb-4">
+
+    30 Days Access
+
+</p>
+
+<ul class="list-unstyled text-start">
+
+<li class="mb-2">
+
+    ✔ Full Meal Access
+
+</li>
+
+<li class="mb-2">
+
+    ✔ Attendance History
+
+</li>
+
+<li class="mb-2">
+
+    ✔ Priority Support
+
+</li>
+
+<li>
+
+    ✔ Extended Validity
+
+</li>
+
+</ul>
+
+</div>
+
+</div>
+
+</label>
 
 </div>
 
@@ -266,13 +540,15 @@ if (msg != null) {
 
 <!-- START DATE -->
 
-<div class="mb-4">
+<div class="card border-0 mb-4">
 
-<label class="form-label fw-bold">
+<div class="card-body">
 
-    Subscription Start Date
+<h4 class="mb-4">
 
-</label>
+    📅 Subscription Start Date
+
+</h4>
 
 <input type="date"
        name="startDate"
@@ -282,53 +558,91 @@ if (msg != null) {
 
 </div>
 
+</div>
+
 <!-- PAYMENT MODE -->
 
-<div class="mb-4">
+<div class="card border-0 mb-4">
 
-<label class="form-label fw-bold">
+<div class="card-body">
 
-    Payment Mode
+<h4 class="mb-4">
 
-</label>
+    💳 Payment Mode
 
-<div class="card border p-3 mb-2">
+</h4>
 
-<div class="form-check">
+<div class="row">
 
-<input class="form-check-input"
-       type="radio"
+<div class="col-md-6 mb-3">
+
+<label class="w-100">
+
+<input type="radio"
        name="mode"
        value="Online"
+       class="d-none"
        required
        onclick="showOnline()">
 
-<label class="form-check-label">
+<div class="card border shadow-sm">
 
-    Online (UPI)
+<div class="card-body text-center py-4">
+
+<h5 class="mb-2">
+
+    🌐 Online Payment
+
+</h5>
+
+<p class="text-muted mb-0">
+
+    UPI / QR Payment
+
+</p>
+
+</div>
+
+</div>
 
 </label>
 
 </div>
 
-</div>
+<div class="col-md-6 mb-3">
 
-<div class="card border p-3">
+<label class="w-100">
 
-<div class="form-check">
-
-<input class="form-check-input"
-       type="radio"
+<input type="radio"
        name="mode"
        value="Offline"
+       class="d-none"
        required
        onclick="showOffline()">
 
-<label class="form-check-label">
+<div class="card border shadow-sm">
 
-    Offline
+<div class="card-body text-center py-4">
+
+<h5 class="mb-2">
+
+    🏢 Offline Payment
+
+</h5>
+
+<p class="text-muted mb-0">
+
+    Pay to mess owner
+
+</p>
+
+</div>
+
+</div>
 
 </label>
+
+</div>
 
 </div>
 
@@ -339,32 +653,31 @@ if (msg != null) {
 <!-- ONLINE BOX -->
 
 <div id="onlineBox"
-     class="text-center mb-4"
-     style="display:none;">
+     style="display:none;"
+     class="card border-0 mb-4">
 
-<div class="card bg-light border-0 p-3">
+<div class="card-body text-center">
 
-<p class="fs-5 mb-2">
+<h3 class="mb-3">
 
-    <b>Scan & Pay</b>
+    📱 Scan & Pay
 
-</p>
+</h3>
 
-<p>
+<p class="text-muted">
 
-    <b>UPI ID:</b> mess@upi
+    UPI ID:
+    <strong>mess@upi</strong>
 
 </p>
 
 <img src="<%=request.getContextPath()%>/images/qr.png"
-     class="img-fluid rounded border p-2 mx-auto d-block"
-     style="max-width:220px;">
+     class="img-fluid rounded shadow-soft p-2 bg-white"
+     style="max-width:240px;">
 
-<p class="text-danger mt-3 mb-0">
+<p class="text-danger mt-4 mb-0">
 
-    ⚠ Add your
-    <b>Name</b>
-    while making payment
+    ⚠ Add your name while making payment
 
 </p>
 
@@ -376,31 +689,25 @@ if (msg != null) {
 
 <div id="offlineBox"
      style="display:none;"
-     class="mb-4">
+     class="alert alert-warning mb-4">
 
-<div class="alert alert-warning text-center mb-0">
-
-    Pay to mess owner.
-    Waiting for admin approval.
-
-</div>
+    Pay directly to mess owner.
+    Waiting for admin approval after submission.
 
 </div>
 
 <!-- SUBMIT -->
 
 <button type="submit"
-        class="btn btn-primary w-100 py-2">
+        class="btn btn-primary w-100 py-3 fs-5">
 
-    Submit Payment
+    Submit Payment Request
 
 </button>
 
 </form>
 
 <% } %>
-
-</div>
 
 </div>
 

@@ -84,7 +84,7 @@ if (planFilter == null) {
 
 <h4 class="mb-4 text-center text-md-start">
 
-    🔍 Filter Subscriptions
+     Filter Subscriptions
 
 </h4>
 
@@ -167,7 +167,7 @@ if (planFilter == null) {
 
 <h4 class="mb-4 text-center text-md-start">
 
-    📋 Subscription Records
+     Subscription Records
 
 </h4>
 
