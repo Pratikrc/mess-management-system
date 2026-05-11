@@ -79,7 +79,7 @@ try {
     e.printStackTrace();
 }
 %>
-
+<%@ include file="auth_check.jsp" %>
 <!DOCTYPE html>
 
 <html>

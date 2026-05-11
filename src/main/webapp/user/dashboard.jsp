@@ -212,6 +212,7 @@ if (!active) {
 }
 %>
 
+<%@ include file="auth_check.jsp" %>
 <!DOCTYPE html>
 
 <html>
@@ -361,7 +362,7 @@ if (!active) {
 
                     <p class="text-muted mb-0">
 
-                        Smart Mess SaaS Dashboard
+                        Smart Mess Dashboard
 
                     </p>
 

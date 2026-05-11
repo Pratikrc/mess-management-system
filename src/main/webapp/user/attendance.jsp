@@ -15,7 +15,7 @@ if (type == null) {
     type = "info";
 }
 %>
-
+<%@ include file="auth_check.jsp" %>
 <!DOCTYPE html>
 
 <html>

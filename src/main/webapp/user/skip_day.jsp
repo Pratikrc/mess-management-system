@@ -112,7 +112,7 @@ try (Connection con = DBConnection.getConnection()) {
 
                 alertType = "warning";
 
-                icon = "⚠️";
+                icon = "";
 
                 title = "Already Skipped";
 
@@ -177,7 +177,7 @@ try (Connection con = DBConnection.getConnection()) {
     title = "Error";
 }
 %>
-
+<%@ include file="auth_check.jsp" %>
 <!DOCTYPE html>
 
 <html>

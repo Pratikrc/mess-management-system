@@ -386,13 +386,13 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.m
 
 <h5 class="mb-1">
 
-    Responsive Platform
+    Easy To Use
 
 </h5>
 
 <p class="mb-0 opacity-75">
 
-    Mobile friendly experience
+    
 
 </p>
 

@@ -10,7 +10,7 @@ if (session.getAttribute("email") == null) {
     return;
 }
 %>
-
+<%@ include file="auth_check.jsp" %>
 <!DOCTYPE html>
 
 <html>

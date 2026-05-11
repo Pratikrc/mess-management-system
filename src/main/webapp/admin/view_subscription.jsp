@@ -338,7 +338,7 @@ if (phone != null && !phone.isEmpty()) {
 
 <td class="fw-bold text-success">
 
-    ₹ <%= rs.getInt("amount") %>
+    Rs. <%= rs.getInt("amount") %>
 
 </td>
 
