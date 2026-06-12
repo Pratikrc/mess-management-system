@@ -475,6 +475,8 @@ if (msg != null) {
 <input type="text"
        name="name"
        class="form-control"
+       pattern="[A-Za-z ]+"
+       title="Only alphabets and spaces are allowed"
        placeholder="Enter full name"
        required>
 
@@ -549,9 +551,15 @@ if (msg != null) {
 <input type="password"
        name="password"
        class="form-control"
+       pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!]).{8,}"
+       title="Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special symbol"
        placeholder="Create password"
        required>
-
+<small class="text-muted">
+Password must contain:
+1 uppercase letter, 1 lowercase letter,
+1 number, 1 special symbol and minimum 8 characters.
+</small>
 </div>
 
 </div>

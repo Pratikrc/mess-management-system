@@ -19,7 +19,11 @@ boolean active = false;
 
 boolean hasPendingPayment = false;
 
+boolean futureSubscription = false;
+
 String plan = "";
+
+String startDate = "";
 
 String endDate = "";
 
@@ -44,11 +48,25 @@ try {
 
         plan = rs1.getString("plan_type");
 
+        startDate = rs1.getString("start_date");
+
         endDate = rs1.getString("end_date");
 
-        java.sql.Date ed = rs1.getDate("end_date");
+        java.sql.Date startDateObj =
+                rs1.getDate("start_date");
 
-        if (ed.getTime() >= System.currentTimeMillis()) {
+        java.sql.Date endDateObj =
+                rs1.getDate("end_date");
+
+        java.sql.Date today =
+                new java.sql.Date(System.currentTimeMillis());
+
+        if (today.before(startDateObj)) {
+
+            futureSubscription = true;
+
+        } else if (today.compareTo(startDateObj) >= 0 &&
+                   today.compareTo(endDateObj) <= 0) {
 
             active = true;
         }
@@ -262,10 +280,40 @@ if (msg != null) {
 <%
 }
 %>
+<% if (futureSubscription) { %>
+
+<div class="card border-0">
+
+<div class="card-body text-center py-5">
+
+<h2 class="text-primary">
+
+    Subscription Approved
+
+</h2>
+
+<p class="mt-3 fs-5">
+
+    Your subscription will start on
+
+    <strong><%= startDate %></strong>
+
+</p>
+
+<p class="text-muted">
+
+    You can access the system from the selected start date.
+
+</p>
+
+</div>
+
+</div>
+
 
 <!-- ACTIVE PLAN -->
 
-<% if (active) { %>
+<% } else if (active) { %>
 
 <div class="card border-0">
 

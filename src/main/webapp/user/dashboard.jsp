@@ -635,7 +635,7 @@ if (!active) {
 
                             <p class="text-muted mb-0">
 
-                                Monthly skip usage
+                                Weekly/Monthly skip usage
 
                             </p>
 

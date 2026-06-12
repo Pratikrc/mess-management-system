@@ -18,7 +18,7 @@ public class LoginServlet extends HttpServlet {
 protected void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
 
-    String email = request.getParameter("email");
+	String email = request.getParameter("email").toLowerCase().trim();
     String password = request.getParameter("password");
 
     try {
@@ -66,9 +66,19 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
             boolean hasActivePlan = false;
 
             if (rs2.next()) {
-                java.sql.Date endDate = rs2.getDate("end_date");
 
-                if (endDate.getTime() >= System.currentTimeMillis()) {
+                java.sql.Date startDate =
+                        rs2.getDate("start_date");
+
+                java.sql.Date endDate =
+                        rs2.getDate("end_date");
+
+                java.sql.Date today =
+                        new java.sql.Date(System.currentTimeMillis());
+
+                if (today.compareTo(startDate) >= 0 &&
+                    today.compareTo(endDate) <= 0) {
+
                     hasActivePlan = true;
                 }
             }

@@ -391,32 +391,21 @@ try {
 
 <form method="get">
 
-<div class="row align-items-center">
-
-<!-- INPUT -->
-
-<div class="col-lg-10 col-md-9 mb-3 mb-md-0">
+<div class="input-group">
 
 <input type="text"
        name="search"
-       class="form-control form-control-lg"
+       class="form-control"
        placeholder="Enter user email address"
        value="<%= search %>"
        required>
 
-</div>
+<button class="btn btn-primary"
+        type="submit">
 
-<!-- BUTTON -->
-
-<div class="col-lg-2 col-md-3">
-
-<button class="btn btn-primary w-100 py-3">
-
-    🔍 Search
+    Search
 
 </button>
-
-</div>
 
 </div>
 

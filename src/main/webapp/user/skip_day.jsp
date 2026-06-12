@@ -15,7 +15,7 @@ String message = "";
 
 String alertType = "info";
 
-String icon = "ℹ️";
+String icon = "";
 
 String title = "Information";
 
@@ -39,7 +39,7 @@ try (Connection con = DBConnection.getConnection()) {
 
         alertType = "danger";
 
-        icon = "🚫";
+        icon = "";
 
         title = "Mess Closed";
 
@@ -122,7 +122,7 @@ try (Connection con = DBConnection.getConnection()) {
 
                 alertType = "danger";
 
-                icon = "❌";
+                icon = "";
 
                 title = "Limit Reached";
 
@@ -130,36 +130,36 @@ try (Connection con = DBConnection.getConnection()) {
 
                 // 🔴 INSERT SKIP
 
-                PreparedStatement psInsert = con.prepareStatement(
+            	String skipRequest = request.getParameter("skip");
 
-                    "INSERT INTO skip_days(user_email, skip_date) " +
-                    "VALUES(?, CURDATE())"
-                );
+            	if("yes".equals(skipRequest)){
 
-                psInsert.setString(1, email);
+            	    PreparedStatement psInsert = con.prepareStatement(
+            	        "INSERT INTO skip_days(user_email, skip_date) VALUES(?, CURDATE())"
+            	    );
 
-                psInsert.executeUpdate();
+            	    psInsert.setString(1, email);
 
-                // 🔴 EXTEND SUBSCRIPTION
+            	    psInsert.executeUpdate();
 
-                PreparedStatement psUpdate = con.prepareStatement(
+            	    PreparedStatement psUpdate = con.prepareStatement(
+            	        "UPDATE subscription " +
+            	        "SET end_date = DATE_ADD(end_date, INTERVAL 1 DAY) " +
+            	        "WHERE user_email=?"
+            	    );
 
-                    "UPDATE subscription " +
-                    "SET end_date = DATE_ADD(end_date, INTERVAL 1 DAY) " +
-                    "WHERE user_email=?"
-                );
+            	    psUpdate.setString(1, email);
 
-                psUpdate.setString(1, email);
+            	    psUpdate.executeUpdate();
 
-                psUpdate.executeUpdate();
+            	    message = "Day skipped successfully & subscription extended!";
 
-                message = "Day skipped successfully & subscription extended!";
+            	    alertType = "success";
 
-                alertType = "success";
+            	    icon = "";
 
-                icon = "✅";
-
-                title = "Skip Successful";
+            	    title = "Skip Successful";
+            	}
             }
         }
     }
@@ -172,7 +172,7 @@ try (Connection con = DBConnection.getConnection()) {
 
     alertType = "danger";
 
-    icon = "❌";
+    icon = "";
 
     title = "Error";
 }
@@ -365,7 +365,7 @@ try (Connection con = DBConnection.getConnection()) {
 
 <h3 class="mb-1">
 
-    <%= icon %>
+    
     <%= title %>
 
 </h3>
@@ -392,14 +392,6 @@ try (Connection con = DBConnection.getConnection()) {
 
 <div class="card-body p-5 text-center">
 
-<!-- ICON -->
-
-<div style="font-size:80px;"
-     class="mb-4">
-
-    <%= icon %>
-
-</div>
 
 <!-- ALERT -->
 
@@ -478,6 +470,23 @@ try (Connection con = DBConnection.getConnection()) {
 </div>
 
 </div>
+
+<!-- ACTIONS -->
+
+<!-- SKIP BUTTON -->
+
+<form method="post" class="mb-4">
+
+    <button type="submit"
+            name="skip"
+            value="yes"
+            class="btn btn-warning w-100 py-3">
+
+        Skip Today's Meal
+
+    </button>
+
+</form>
 
 <!-- ACTIONS -->
 

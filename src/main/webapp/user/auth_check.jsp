@@ -38,11 +38,17 @@ try{
 
     if(rs.next()){
 
+        java.sql.Date subscriptionStartDate =
+            rs.getDate("start_date");
+
         java.sql.Date subscriptionEndDate =
             rs.getDate("end_date");
 
-        if(subscriptionEndDate.getTime() >=
-                System.currentTimeMillis()){
+        java.sql.Date today =
+            new java.sql.Date(System.currentTimeMillis());
+
+        if(today.compareTo(subscriptionStartDate) >= 0 &&
+           today.compareTo(subscriptionEndDate) <= 0){
 
             hasActivePlan = true;
         }
@@ -59,7 +65,7 @@ if(!hasActivePlan){
 
         request.getContextPath() +
 
-        "/user/payment.jsp?msg=Please wait for admin approval&type=error"
+        "/user/payment.jsp?msg=Subscription is not active&type=error"
     );
 
     return;
